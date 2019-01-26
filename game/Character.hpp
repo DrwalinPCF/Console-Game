@@ -26,7 +26,7 @@ public:
 		if( this->attackCooldown > 250 )
 		{
 			Projectile * projectile = Allocate<Projectile>();
-			projectile->Init( this->map );
+			projectile->Init( this->world );
 			
 			Vector projectileStartPosition = this->GetPos();
 			if( this->direction.x < 0 )
@@ -40,12 +40,12 @@ public:
 			else
 				projectileStartPosition += Vector(-1,-1);
 			
-			projectile->Spawn( this->map->GetWorld()->GetNewUniqueActorName(),
+			projectile->Spawn( this->world->GetNewUniqueActorName(),
 				projectileStartPosition, Vector(1,1) );
 			
 			
 			
-			this->map->GetWorld()->AddActor( projectile );
+			this->world->AddActor( projectile );
 			projectile->SetVelocity( this->direction, 20, 311*10 );
 			this->attackCooldown = 0;
 		}
@@ -56,7 +56,7 @@ public:
 		if( this->attackCooldown > 250 )
 		{
 			std::set<Actor*> targets;
-			this->map->GetActors( this->GetPos()-Vector(1,1), this->GetPos()+this->GetSize(), {this}, targets );
+			this->world->GetActors( this->GetPos()-Vector(1,1), this->GetPos()+this->GetSize(), {this}, targets );
 			for( auto it = targets.begin(); it != targets.end(); ++it )
 			{
 				Character * ch = dynamic_cast<Character*>(*it);
@@ -106,7 +106,7 @@ public:
 			//death
 			if( this->GetName() != "Player" )
 			{
-				this->map->GetWorld()->QueueRemoveActor( this->GetName() );
+				this->world->QueueRemoveActor( this->GetName() );
 				this->Despawn();
 			}
 			else
@@ -167,9 +167,9 @@ public:
 		Character::Despawn();
 	}
 	
-	virtual void Init( class Map * map ) override
+	virtual void Init( class World * world ) override
 	{
-		Actor::Init( map );
+		Actor::Init( world );
 	}
 	
 	virtual void Deinit() override

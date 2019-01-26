@@ -12,6 +12,30 @@
 
 #include "Utility.hpp"
 
+void World::UpdateActorCollider( Actor * ptr )
+{
+	this->tree.Erase( ptr );
+	this->tree.Insert( ptr->GetAABBmin(), ptr->GetAABBmax(), ptr );
+}
+
+void World::GetActors( Vector min, Vector max, const std::set<Actor*> & ignore, std::set < Actor* > & ret )
+{
+	ret.clear();
+	this->tree.Get( min, max, ret );
+	for( auto it = ignore.begin(); it != ignore.end(); ++it )
+		ret.erase( *it );
+}
+
+bool World::IsWalkable( Vector min, Vector max, const std::set<Actor*> & ignore )
+{
+	std::set < Actor* > temp;
+	this->GetActors( min, max, ignore, temp );
+	for( auto it = temp.begin(); it != temp.end(); ++it )
+		if( (*it)->IsWalkable() == false )
+			return false;
+	return true;
+}
+
 long long World::GetNumberOfActors() const
 {
 	return this->actors.size();
@@ -34,11 +58,6 @@ std::string World::GetNewUniqueActorName() const
 void World::QueueRemoveActor( std::string name )
 {
 	this->queueActorsToRemove.emplace_back( name );
-}
-
-Map * World::GetMap()
-{
-	return this->map;
 }
 
 bool World::CenterAtActor( const std::string & name )
@@ -71,7 +90,7 @@ void World::AddActor( Actor * ptr )
 	if( it == this->actors.end() )
 	{
 		this->actors[ ptr->GetName() ] = ptr;
-		this->map->AddActor( ptr );
+		this->tree.Insert( ptr->GetAABBmin(), ptr->GetAABBmax(), ptr );
 	}
 }
 
@@ -80,10 +99,10 @@ void World::AddActor( std::string name, Vector pos, Vector size, Actor * ptr )
 	auto it = this->actors.find( name );
 	if( it == this->actors.end() )
 	{
-		ptr->Init( this->map );
+		ptr->Init( this );
 		ptr->Spawn( name, pos, size );
 		this->actors[ name ] = ptr;
-		this->map->AddActor( ptr );
+		this->tree.Insert( ptr->GetAABBmin(), ptr->GetAABBmax(), ptr );
 	}
 }
 
@@ -93,7 +112,7 @@ void World::DestroyActor( const std::string & name )
 	if( it != this->actors.end() )
 	{
 		it->second->Deinit();
-		this->map->RemoveActor( it->second );
+		this->tree.Erase( it->second );
 		Free( it->second );
 		//delete it->second;
 		this->actors.erase( it );
@@ -152,7 +171,7 @@ bool World::AppendLoadWithoutOverlapp( const std::string & fileName )
 		if( it != this->registeredActors.end() )
 		{
 			Actor * newActor = it->second->Make();
-			newActor->Init( this->map );
+			newActor->Init( this );
 			newActor->Load( file );
 			if( this->actors.find( newActor->GetName() ) != this->actors.end() )
 			{
@@ -198,7 +217,7 @@ bool World::AppendLoadWithOverlapp( const std::string & fileName )
 		if( it != this->registeredActors.end() )
 		{
 			Actor * newActor = it->second->Make();
-			newActor->Init( this->map );
+			newActor->Init( this );
 			newActor->Load( file );
 			auto it2 = this->actors.find( newActor->GetName() );
 			if( it2 != this->actors.end() )
@@ -206,7 +225,7 @@ bool World::AppendLoadWithOverlapp( const std::string & fileName )
 				this->DestroyActor( it2->first );
 			}
 			this->actors[newActor->GetName()] = newActor;
-			this->map->AddActor( newActor );
+			this->tree.Insert( newActor->GetAABBmin(), newActor->GetAABBmax(), newActor );
 		}
 		else
 		{
@@ -224,8 +243,7 @@ bool World::AppendLoadWithOverlapp( const std::string & fileName )
 
 bool World::Load( const std::string & fileName )
 {
-	this->map->Clear();
-	this->map->SetWorld( this );
+	this->tree.Clear();
 	for( auto it = this->actors.begin(); it != this->actors.end(); ++it )
 		Free( it->second );
 	actors.clear();
@@ -266,7 +284,7 @@ void World::Draw( unsigned deltaTime )
 		
 		std::set <Actor*> toDraw;
 		std::set <Actor*> ignores;
-		this->map->GetActors( Vector(0,0) + this->screenOffset, Vector(0,0) + this->screenOffset + this->mapDrawer->GetWinSize(), ignores, toDraw );
+		this->GetActors( Vector(0,0) + this->screenOffset, Vector(0,0) + this->screenOffset + this->mapDrawer->GetWinSize(), ignores, toDraw );
 		
 		this->mapScr->Clear();
 		for( auto it = toDraw.begin(); it != toDraw.end(); ++it )
@@ -310,30 +328,11 @@ void World::BeginLoop()
 		
 		this->Tick( deltaTime );
 		this->Draw( deltaTime );
-		
-		
-		
-		
-		/*
-		this->map->Clear();
-		this->map->~Map();
-		
-		this->map = new ( (void*)(this->map) ) Map();
-		this->map->SetWorld( this );
-		
-		for( auto it = this->actors.begin(); it != this->actors.end(); ++it )
-		{
-			this->map->AddActor( it->second );
-		}
-		*/
-		
-		
 	}
 }
 
 void World::Destroy()
 {
-	this->map->Clear();
 	for( auto it = this->actors.begin(); it != this->actors.end(); ++it )
 		Free( it->second );
 	for( auto it = registeredActors.begin(); it != this->registeredActors.end(); ++it )
@@ -367,8 +366,6 @@ World::World() :
 		SetConsoleTitle( "Game" );
 	}
 	
-	this->map = Allocate<Map>();
-	this->map->SetWorld( this );
 	this->screen = Allocate<Window>();
 	this->mapScr = Allocate<Window>();
 	this->guiScr = Allocate<Window>();

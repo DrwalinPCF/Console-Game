@@ -12,13 +12,13 @@ std::string Actor::GetName() const
 
 bool Actor::SetPos( const Vector & loc )
 {
-	if( this->map )
+	if( this->world )
 	{
 		Vector temp = this->pos;
 		this->pos = loc;
-		if( this->IsWalkable() || this->map->IsSpaceWalkable( this->GetAABBmin(), this->GetAABBmax(), {this} ) )
+		if( this->IsWalkable() || this->world->IsWalkable( this->GetAABBmin(), this->GetAABBmax(), {this} ) )
 		{
-			this->map->UpdateActor( this );
+			this->world->UpdateActorCollider( this );
 			return true;
 		}
 		this->pos = temp;
@@ -92,25 +92,25 @@ void Actor::Despawn()
 	this->name = "";
 }
 
-void Actor::Init( Map * map )
+void Actor::Init( World * world )
 {
-	this->map = map;
+	this->world = world;
 }
 
 void Actor::Deinit()
 {
-	this->map = nullptr;
+	this->world = NULL;
 }
 
 
 Actor::Actor() :
-	map(nullptr)
+	world(NULL)
 {
 }
 
 Actor::~Actor()
 {
-	this->map = nullptr;
+	this->world = NULL;
 }
 
 #endif

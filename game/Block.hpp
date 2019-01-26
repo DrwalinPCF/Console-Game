@@ -58,9 +58,9 @@ public:
 	{
 	}
 	
-	virtual void Init( class Map * map ) override
+	virtual void Init( class World * world ) override
 	{
-		Actor::Init( map );
+		Actor::Init( world );
 	}
 	
 	virtual void Deinit() override

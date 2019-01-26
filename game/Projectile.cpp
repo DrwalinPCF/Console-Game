@@ -49,19 +49,19 @@ void Projectile::Tick( unsigned deltaTime )
 	this->timeToDespawn -= deltaTime;
 	if( this->timeToDespawn <= 0 )
 	{
-		this->map->GetWorld()->QueueRemoveActor( this->GetName() );
+		this->world->QueueRemoveActor( this->GetName() );
 	}
 	
 	this->movementCooldown += deltaTime;
 	while( this->movementCooldown >= 1000/this->velocity )
 	{
 		std::set<Actor*> targets;
-		this->map->GetActors( this->GetPos(), this->GetPos(), {this}, targets );
+		this->world->GetActors( this->GetPos(), this->GetPos(), {this}, targets );
 		for( auto it = targets.begin(); it != targets.end(); ++it )
 		{
 			if( (*it)->IsWalkable() == false )
 			{
-				this->map->GetWorld()->QueueRemoveActor( this->GetName() );
+				this->world->QueueRemoveActor( this->GetName() );
 				Character * ch = dynamic_cast<Character*>(*it);
 				if( ch != nullptr )
 				{
@@ -76,12 +76,12 @@ void Projectile::Tick( unsigned deltaTime )
 	}
 	
 	std::set<Actor*> targets;
-	this->map->GetActors( this->GetPos(), this->GetPos(), {this}, targets );
+	this->world->GetActors( this->GetPos(), this->GetPos(), {this}, targets );
 	for( auto it = targets.begin(); it != targets.end(); ++it )
 	{
 		if( (*it)->IsWalkable() == false )
 		{
-			this->map->GetWorld()->QueueRemoveActor( this->GetName() );
+			this->world->QueueRemoveActor( this->GetName() );
 			Character * ch = dynamic_cast<Character*>(*it);
 			if( ch != nullptr )
 			{
@@ -134,9 +134,9 @@ void Projectile::Despawn()
 {
 }
 
-void Projectile::Init( class Map * map )
+void Projectile::Init( class World * world )
 {
-	Actor::Init( map );
+	Actor::Init( world );
 }
 
 void Projectile::Deinit()
