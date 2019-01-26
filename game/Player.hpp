@@ -54,10 +54,10 @@ public:
 		}
 		if( GetAsyncKeyState( VK_ESCAPE ) & 0x8000 )
 		{
-			this->world->Exit();
+			this->map->GetWorld()->Exit();
 		}
 		if( GetAsyncKeyState( VK_OEM_3 ) & 0x8000 )
-			dynamic_cast<World2*>(this->world)->BeginDrawingMenu( World2::MenuTypes::DEV_CONSOLE );
+			dynamic_cast<World2*>(this->map->GetWorld())->BeginDrawingMenu( World2::MenuTypes::DEV_CONSOLE );
 		
 		if( GetAsyncKeyState( VK_SPACE ) & 0x8000 )
 			this->Attack();
@@ -121,9 +121,9 @@ public:
 		Character::Despawn();
 	}
 	
-	virtual void Init( class World * world ) override
+	virtual void Init( class Map * map ) override
 	{
-		Character::Init( world );
+		Character::Init( map );
 	}
 	
 	virtual void Deinit() override

@@ -11,7 +11,7 @@
 #include "Window.hpp"
 
 #include "Actor.h"
-#include "RangeQuadTree.hpp"
+#include "Map.h"
 
 #include "Drawer.hpp"
 
@@ -19,7 +19,7 @@ class World
 {
 protected:
 	
-	RangeQuadTree<Actor*> tree;
+	Map * map;
 	
 	std::vector < std::string > queueActorsToRemove;
 	std::map < std::string, Actor* > actors;
@@ -42,15 +42,13 @@ protected:
 	
 public:
 	
-	void UpdateActorCollider( Actor * ptr );
-	void GetActors( Vector min, Vector max, const std::set<Actor*> & ignore, std::set < Actor* > & ret );
-	bool IsWalkable( Vector min, Vector max, const std::set<Actor*> & ignore );
-	
 	long long GetNumberOfActors() const;
 	
 	std::string GetNewUniqueActorName() const;
 	
 	void QueueRemoveActor( std::string name );
+	
+	Map * GetMap();
 	
 	bool CenterAtActor( const std::string & name );
 	

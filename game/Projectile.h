@@ -36,7 +36,7 @@ public:
 	
 	virtual void Despawn() override;
 	
-	virtual void Init( class World * world ) override;
+	virtual void Init( class Map * map ) override;
 	
 	virtual void Deinit() override;
 	
