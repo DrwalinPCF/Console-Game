@@ -4,6 +4,7 @@
 
 #include "Actor.h"
 #include "Map.h"
+#include "World.h"
 
 std::string Actor::GetName() const
 {
@@ -12,16 +13,19 @@ std::string Actor::GetName() const
 
 bool Actor::SetPos( const Vector & loc )
 {
-	if( this->map )
+	if( this->world )
 	{
-		Vector temp = this->pos;
-		this->pos = loc;
-		if( this->IsWalkable() || this->map->IsSpaceWalkable( this->GetAABBmin(), this->GetAABBmax(), {this} ) )
+		if( this->world->GetMap() )
 		{
-			this->map->UpdateActor( this );
-			return true;
+			Vector temp = this->pos;
+			this->pos = loc;
+			if( this->IsWalkable() || this->world->GetMap()->IsSpaceWalkable( this->GetAABBmin(), this->GetAABBmax(), {this} ) )
+			{
+				this->world->GetMap()->UpdateActor( this );
+				return true;
+			}
+			this->pos = temp;
 		}
-		this->pos = temp;
 	}
 	return false;
 }
@@ -92,25 +96,25 @@ void Actor::Despawn()
 	this->name = "";
 }
 
-void Actor::Init( Map * map )
+void Actor::Init( World * world )
 {
-	this->map = map;
+	this->world = world;
 }
 
 void Actor::Deinit()
 {
-	this->map = nullptr;
+	this->world = nullptr;
 }
 
 
 Actor::Actor() :
-	map(nullptr)
+	world(nullptr)
 {
 }
 
 Actor::~Actor()
 {
-	this->map = nullptr;
+	this->world = nullptr;
 }
 
 #endif

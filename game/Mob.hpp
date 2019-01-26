@@ -67,9 +67,9 @@ public:
 	{
 	}
 	
-	virtual void Init( class Map * map ) override
+	virtual void Init( class World * world ) override
 	{
-		Character::Init( map );
+		Character::Init( world );
 	}
 	
 	virtual void Deinit() override

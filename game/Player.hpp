@@ -36,47 +36,33 @@ public:
 	{
 		Character::Tick( deltaTime );
 		
-		if( GetAsyncKeyState( 'A' ) & 0x8000 )
-		{
-			this->Move( Vector( -1, 0 ) );
-		}
-		if( GetAsyncKeyState( 'D' ) & 0x8000 )
-		{
-			this->Move( Vector( 1, 0 ) );
-		}
-		if( GetAsyncKeyState( 'S' ) & 0x8000 )
-		{
-			this->Move( Vector( 0, 1 ) );
-		}
-		if( GetAsyncKeyState( 'W' ) & 0x8000 )
-		{
-			this->Move( Vector( 0, -1 ) );
-		}
 		if( GetAsyncKeyState( VK_ESCAPE ) & 0x8000 )
-		{
-			this->map->GetWorld()->Exit();
-		}
+			this->world->Exit();
 		if( GetAsyncKeyState( VK_OEM_3 ) & 0x8000 )
-			dynamic_cast<World2*>(this->map->GetWorld())->BeginDrawingMenu( World2::MenuTypes::DEV_CONSOLE );
+			dynamic_cast<World2*>(this->world)->BeginDrawingMenu( World2::MenuTypes::DEV_CONSOLE );
 		
-		if( GetAsyncKeyState( VK_SPACE ) & 0x8000 )
-			this->Attack();
+		if( GetAsyncKeyState( 'A' ) & 0x8000 )
+			this->Move( Vector( -1, 0 ) );
+		if( GetAsyncKeyState( 'D' ) & 0x8000 )
+			this->Move( Vector( 1, 0 ) );
+		if( GetAsyncKeyState( 'S' ) & 0x8000 )
+			this->Move( Vector( 0, 1 ) );
+		if( GetAsyncKeyState( 'W' ) & 0x8000 )
+			this->Move( Vector( 0, -1 ) );
 		
 		if( GetAsyncKeyState( VK_LEFT ) & 0x8000 )
 			this->direction = Vector( -1, 0 );
-		
 		if( GetAsyncKeyState( VK_RIGHT ) & 0x8000 )
 			this->direction = Vector( 1, 0 );
-		
 		if( GetAsyncKeyState( VK_UP ) & 0x8000 )
 			this->direction = Vector( 0, -1 );
-		
 		if( GetAsyncKeyState( VK_DOWN ) & 0x8000 )
 			this->direction = Vector( 0, 1 );
 		
+		if( GetAsyncKeyState( VK_SPACE ) & 0x8000 )
+			this->Attack();
 		if( GetAsyncKeyState( VK_RETURN ) & 0x8000 )
 			this->Shoot();
-		
 		
 		if( GetAsyncKeyState( 0x30 ) & 0x8000 )
 			PrintMemoryAllocatedToFile( "file0.txt" );
@@ -98,7 +84,6 @@ public:
 			PrintMemoryAllocatedToFile( "file8.txt" );
 		if( GetAsyncKeyState( 0x39 ) & 0x8000 )
 			PrintMemoryAllocatedToFile( "file9.txt" );
-		
 	}
 	
 	virtual void Save( std::ofstream & file ) const override
@@ -121,9 +106,9 @@ public:
 		Character::Despawn();
 	}
 	
-	virtual void Init( class Map * map ) override
+	virtual void Init( class World * world ) override
 	{
-		Character::Init( map );
+		Character::Init( world );
 	}
 	
 	virtual void Deinit() override

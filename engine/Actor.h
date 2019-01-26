@@ -15,7 +15,7 @@ protected:
 	Vector pos;
 	Vector size;
 	std::string name;
-	class Map * map;
+	class World * world;
 	
 public:
 	
@@ -46,7 +46,7 @@ public:
 	virtual void Spawn( const std::string & name, const Vector & pos, const Vector & size );
 	virtual void Despawn();
 	
-	virtual void Init( class Map * map );
+	virtual void Init( class World * world );
 	virtual void Deinit();
 	
 	

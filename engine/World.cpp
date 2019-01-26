@@ -80,7 +80,7 @@ void World::AddActor( std::string name, Vector pos, Vector size, Actor * ptr )
 	auto it = this->actors.find( name );
 	if( it == this->actors.end() )
 	{
-		ptr->Init( this->map );
+		ptr->Init( this );
 		ptr->Spawn( name, pos, size );
 		this->actors[ name ] = ptr;
 		this->map->AddActor( ptr );
@@ -152,7 +152,7 @@ bool World::AppendLoadWithoutOverlapp( const std::string & fileName )
 		if( it != this->registeredActors.end() )
 		{
 			Actor * newActor = it->second->Make();
-			newActor->Init( this->map );
+			newActor->Init( this );
 			newActor->Load( file );
 			if( this->actors.find( newActor->GetName() ) != this->actors.end() )
 			{
@@ -198,7 +198,7 @@ bool World::AppendLoadWithOverlapp( const std::string & fileName )
 		if( it != this->registeredActors.end() )
 		{
 			Actor * newActor = it->second->Make();
-			newActor->Init( this->map );
+			newActor->Init( this );
 			newActor->Load( file );
 			auto it2 = this->actors.find( newActor->GetName() );
 			if( it2 != this->actors.end() )
@@ -296,13 +296,13 @@ void World::BeginLoop()
 	while( this->end == false )
 	{
 		unsigned deltaTime = clock() - beg;
-		if( deltaTime < 20 )
+		if( deltaTime < 10 )
 		{
-			Sleep( 20 - deltaTime );
+			Sleep( 10 - deltaTime );
 		}
 		deltaTime = clock() - beg;
-		if( deltaTime < 20 )
-			deltaTime = 20;
+		if( deltaTime < 10 )
+			deltaTime = 10;
 		else if( deltaTime > 100 )
 			deltaTime = 100;
 		
@@ -310,24 +310,6 @@ void World::BeginLoop()
 		
 		this->Tick( deltaTime );
 		this->Draw( deltaTime );
-		
-		
-		
-		
-		/*
-		this->map->Clear();
-		this->map->~Map();
-		
-		this->map = new ( (void*)(this->map) ) Map();
-		this->map->SetWorld( this );
-		
-		for( auto it = this->actors.begin(); it != this->actors.end(); ++it )
-		{
-			this->map->AddActor( it->second );
-		}
-		*/
-		
-		
 	}
 }
 

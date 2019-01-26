@@ -62,5 +62,84 @@ inline void PrintMemoryAllocatedToFile( std::string fileName )
 }
 
 
+#include <vector>
+#include <string>
+
+inline std::vector < std::string > SubdivideString( const std::string & str )
+{
+	std::vector < std::string > ret;
+	unsigned i=0, b=0, e=0;
+	
+	for( ; i < str.size(); ++i )
+	{
+		if( str[i] == '\"' || str[i] == '\'' )
+		{
+			if( e > b )
+			{
+				if( e > str.size() )
+					e = str.size();
+				ret.emplace_back( str.substr( b, e-b ) );
+			}
+			b = i+1;
+			e = i+1;
+			
+			if( i+1 < str.size() )
+			{
+				for( ++i; i < str.size(); ++i )
+				{
+					if( str[i] == '\"' || str[i] == '\'' )
+					{
+						break;
+					}
+					else
+					{
+						e = i+1;
+					}
+				}
+				
+				if( e > b )
+				{
+					if( e > str.size() )
+						e = str.size();
+					ret.resize( ret.size() + 1 );
+					ret.back() = str.substr( b, e-b );
+				}
+				e = i+1;
+				b = i+1;
+			}
+			else
+			{
+				return ret;
+			}
+		}
+		else if( str[i] == ' ' )
+		{
+			if( e > b )
+			{
+				if( e > str.size() )
+					e = str.size();
+				ret.resize( ret.size() + 1 );
+				ret.back() = str.substr( b, e-b );
+			}
+			e = i+1;
+			b = i+1;
+		}
+		else
+		{
+			e = i+1;
+		}
+	}
+	
+	if( e > b )
+	{
+		if( e > str.size() )
+			e = str.size();
+		ret.resize( ret.size() + 1 );
+		ret.back() = str.substr( b, e-b );
+	}
+	
+	return ret;
+}
+
 #endif
 
