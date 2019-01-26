@@ -1,0 +1,102 @@
+
+#ifndef MOB_HPP
+#define MOB_HPP
+
+#include "Character.hpp"
+#include "../engine/Drawer.hpp"
+
+class Mob : public Character
+{
+protected:
+	
+	int movementCooldown;
+	
+public:
+	
+	virtual bool IsWalkable() const override
+	{
+		return false;
+	}
+	
+	virtual bool NeedTick() const override
+	{
+		return true;
+	}
+	
+	virtual void Draw( unsigned deltaTime, class Drawer * drawer ) override
+	{
+		long long x, y;
+		for( x = 0; x < size.x; ++x )
+		{
+			for( y = 0; y < size.y; ++y )
+			{
+				drawer->Draw( Vector(x,y), '_', FOREGROUND_GREEN | FOREGROUND_BLUE | BACKGROUND_RED );
+			}
+		}
+	}
+	
+	virtual void Tick( unsigned deltaTime ) override
+	{
+		Character::Tick( deltaTime );
+		this->movementCooldown += deltaTime;
+		if( this->movementCooldown > 200 )
+		{
+			this->Move( Vector( (rand()%3)-1, (rand()%3)-1 ) );
+			this->movementCooldown = 0;
+		}
+	}
+	
+	virtual void Save( std::ofstream & file ) const override
+	{
+		Character::Save( file );
+		file << this->movementCooldown << " ";
+	}
+	
+	virtual void Load( std::ifstream & file ) override
+	{
+		Character::Load( file );
+		file >> this->movementCooldown;
+	}
+	
+	virtual void Spawn( const std::string & name, const Vector & pos, const Vector & size ) override
+	{
+		Character::Spawn( name, pos, size );
+	}
+	
+	virtual void Despawn() override
+	{
+	}
+	
+	virtual void Init( class Map * map ) override
+	{
+		Character::Init( map );
+	}
+	
+	virtual void Deinit() override
+	{
+		Character::Deinit();
+	}
+	
+	
+	virtual std::string GetTypeName() override
+	{
+		return "Mob";
+	}
+	
+	virtual Actor * Make() override
+	{
+		return Allocate<Mob>();
+	}
+	
+	virtual ~Mob() override
+	{
+	}
+	
+	Mob()
+	{
+		this->movementCooldown = 0;
+	}
+};
+
+#endif
+
