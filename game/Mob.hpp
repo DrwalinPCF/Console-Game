@@ -35,15 +35,15 @@ public:
 		}
 	}
 	
-	virtual void Tick( unsigned deltaTime ) override
+	virtual unsigned Tick() override
 	{
-		Character::Tick( deltaTime );
-		this->movementCooldown += deltaTime;
-		if( this->movementCooldown > 200 )
+		unsigned ret = Character::Tick();
+		if( this->movementCooldown <= clock() )
 		{
 			this->Move( Vector( (rand()%3)-1, (rand()%3)-1 ) );
-			this->movementCooldown = 0;
+			this->movementCooldown = clock() + 250;
 		}
+		return ret;
 	}
 	
 	virtual void Save( std::ofstream & file ) const override

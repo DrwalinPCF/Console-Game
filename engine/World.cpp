@@ -72,6 +72,8 @@ void World::AddActor( Actor * ptr )
 	{
 		this->actors[ ptr->GetName() ] = ptr;
 		this->map->AddActor( ptr );
+		if( ptr->NeedTick() == true )
+			this->tickUpdateQueue.insert( std::pair<unsigned,Actor*>( clock(), ptr ) );
 	}
 }
 
@@ -84,6 +86,8 @@ void World::AddActor( std::string name, Vector pos, Vector size, Actor * ptr )
 		ptr->Spawn( name, pos, size );
 		this->actors[ name ] = ptr;
 		this->map->AddActor( ptr );
+		if( ptr->NeedTick() == true )
+			this->tickUpdateQueue.insert( std::pair<unsigned,Actor*>( clock(), ptr ) );
 	}
 }
 
@@ -92,10 +96,16 @@ void World::DestroyActor( const std::string & name )
 	auto it = this->actors.find( name );
 	if( it != this->actors.end() )
 	{
+		for( auto it1 = this->tickUpdateQueue.begin(); it1 != this->tickUpdateQueue.end(); ++it1 )
+		{
+			if( it1->second == it->second )
+			{
+				it1 = this->tickUpdateQueue.erase( it1 );
+			}
+		}
 		it->second->Deinit();
 		this->map->RemoveActor( it->second );
 		Free( it->second );
-		//delete it->second;
 		this->actors.erase( it );
 	}
 }
@@ -156,7 +166,6 @@ bool World::AppendLoadWithoutOverlapp( const std::string & fileName )
 			newActor->Load( file );
 			if( this->actors.find( newActor->GetName() ) != this->actors.end() )
 			{
-				//this->actors[newActor->GetName()] = newActor;
 				this->AddActor( newActor );
 			}
 			else
@@ -205,8 +214,7 @@ bool World::AppendLoadWithOverlapp( const std::string & fileName )
 			{
 				this->DestroyActor( it2->first );
 			}
-			this->actors[newActor->GetName()] = newActor;
-			this->map->AddActor( newActor );
+			this->AddActor( newActor );
 		}
 		else
 		{
@@ -232,17 +240,20 @@ bool World::Load( const std::string & fileName )
 	return this->AppendLoadWithOverlapp( fileName );
 }
 
-void World::Tick( unsigned deltaTime )
+void World::Tick()
 {
 	if( this->updateTick )
 	{
-		for( auto it = this->actors.begin(); it != this->actors.end(); ++it )
+		std::multimap < unsigned, Actor* > toInsert;
+		auto it = this->tickUpdateQueue.begin();
+		for( ; it != this->tickUpdateQueue.end() && it->first <= clock(); ++it )
 		{
-			if( it->second->NeedTick() )
-			{
-				it->second->Tick( deltaTime );
-			}
+			unsigned nextTick = clock() + it->second->Tick();
+			auto it2 = toInsert.insert( std::pair<unsigned,Actor*>(nextTick,it->second) );
 		}
+		if( it != this->tickUpdateQueue.begin() )
+			this->tickUpdateQueue.erase( this->tickUpdateQueue.begin(), it );
+		this->tickUpdateQueue.insert( toInsert.begin(), toInsert.end() );
 		
 		for( auto it = this->queueActorsToRemove.begin(); it != this->queueActorsToRemove.end(); ++it )
 		{
@@ -308,7 +319,7 @@ void World::BeginLoop()
 		
 		beg = clock();
 		
-		this->Tick( deltaTime );
+		this->Tick();
 		this->Draw( deltaTime );
 	}
 }

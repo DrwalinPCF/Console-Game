@@ -12,8 +12,8 @@ class Character : public Actor
 {
 protected:
 	
-	float hp;
-	float maxHp;
+	int hp;
+	int maxHp;
 	
 	int attackCooldown;
 	
@@ -23,7 +23,7 @@ public:
 	
 	void Shoot()
 	{
-		if( this->attackCooldown > 50 )
+		if( this->attackCooldown <= clock() )
 		{
 			Projectile * projectile = Allocate<Projectile>();
 			projectile->Init( this->world );
@@ -40,18 +40,17 @@ public:
 			else
 				projectileStartPosition += Vector(-1,-1);
 			
-			projectile->Spawn( this->world->GetNewUniqueActorName(),
-				projectileStartPosition, Vector(1,1) );
+			projectile->Spawn( this->world->GetNewUniqueActorName(), projectileStartPosition, Vector(1,1) );
 			
 			this->world->AddActor( projectile );
-			projectile->SetVelocity( this->direction, 30, 311*10 );
-			this->attackCooldown = 0;
+			projectile->SetVelocity( this->direction, 20, 311*10 );
+			this->attackCooldown = clock() + 250;
 		}
 	}
 	
 	void Attack()
 	{
-		if( this->attackCooldown > 50 )
+		if( this->attackCooldown <= clock() )
 		{
 			std::set<Actor*> targets;
 			this->world->GetMap()->GetActors( this->GetPos()-Vector(1,1), this->GetPos()+this->GetSize(), {this}, targets );
@@ -63,7 +62,7 @@ public:
 					ch->DamageAbsorb( 31.1f );
 				}
 			}
-			this->attackCooldown = 0;
+			this->attackCooldown = clock() + 250;
 		}
 	}
 	
@@ -92,14 +91,14 @@ public:
 		return true;
 	}
 	
-	virtual void Draw( unsigned deltaTime, class Drawer * drawer ) override
+	virtual void Draw( unsigned currentSecond, class Drawer * drawer ) override
 	{
 		drawer->Draw( Vector(0,0), 'C' );
 	}
 	
-	virtual void Tick( unsigned deltaTime ) override
+	virtual unsigned Tick() override
 	{
-		if( this->hp <= 0.0f )
+		if( this->hp <= 0 )
 		{
 			//death
 			if( this->GetName() != "Player" )
@@ -112,22 +111,8 @@ public:
 				
 			}
 		}
-		else if( this->hp < this->maxHp )
-		{
-			this->hp += float(deltaTime) * 0.0002f;
-			if( this->hp > this->maxHp )
-				this->hp = this->maxHp;
-		}
-		else if( this->hp > this->maxHp )
-		{
-			this->hp -= float(deltaTime) * 0.01f;
-			if( this->hp < this->maxHp )
-				this->hp = this->maxHp;
-		}
 		
-		if( this->attackCooldown < 0 )
-			this->attackCooldown = 0;
-		this->attackCooldown += deltaTime;
+		return 40;
 	}
 	
 	virtual void Save( std::ofstream & file ) const override

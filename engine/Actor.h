@@ -41,7 +41,7 @@ public:
 	virtual void Save( std::ofstream & file ) const;
 	virtual void Load( std::ifstream & file );
 	
-	virtual void Tick( unsigned deltaTime ) = 0;
+	virtual unsigned Tick() = 0;
 	
 	virtual void Spawn( const std::string & name, const Vector & pos, const Vector & size );
 	virtual void Despawn();

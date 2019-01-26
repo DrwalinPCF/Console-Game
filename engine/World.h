@@ -40,6 +40,8 @@ protected:
 	
 	std::string centeredActorName;
 	
+	std::multimap < unsigned, Actor* > tickUpdateQueue;
+	
 public:
 	
 	long long GetNumberOfActors() const;
@@ -71,7 +73,7 @@ public:
 	
 	virtual void DrawMenu( Window * window ) = 0;
 	virtual void DrawGUI( Window * window ) = 0;
-	void Tick( unsigned deltaTime );
+	void Tick();
 	void Draw( unsigned deltaTime );
 	
 	void BeginLoop();

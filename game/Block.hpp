@@ -23,7 +23,7 @@ public:
 		return false;
 	}
 	
-	virtual void Draw( unsigned deltaTime, class Drawer * drawer ) override
+	virtual void Draw( unsigned currentSecond, class Drawer * drawer ) override
 	{
 		long long x, y;
 		for( x = 0; x < size.x; ++x )
@@ -35,8 +35,9 @@ public:
 		}
 	}
 	
-	virtual void Tick( unsigned deltaTime ) override
+	virtual unsigned Tick() override
 	{
+		return 10000;
 	}
 	
 	virtual void Save( std::ofstream & file ) const override

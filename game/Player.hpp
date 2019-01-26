@@ -18,7 +18,7 @@ protected:
 	
 public:
 	
-	virtual void Draw( unsigned deltaTime, class Drawer * drawer ) override
+	virtual void Draw( unsigned currentSecond, class Drawer * drawer ) override
 	{
 		if( this->direction.x > 0 )
 			drawer->Draw( Vector(0,0), '>' );
@@ -32,9 +32,9 @@ public:
 			drawer->Draw( Vector(0,0), 'X', FOREGROUND_RED | BACKGROUND_BLUE );
 	}
 	
-	virtual void Tick( unsigned deltaTime ) override
+	virtual unsigned Tick() override
 	{
-		Character::Tick( deltaTime );
+		unsigned ret = Character::Tick();
 		
 		if( GetAsyncKeyState( VK_ESCAPE ) & 0x8000 )
 			this->world->Exit();
@@ -84,6 +84,8 @@ public:
 			PrintMemoryAllocatedToFile( "file8.txt" );
 		if( GetAsyncKeyState( 0x39 ) & 0x8000 )
 			PrintMemoryAllocatedToFile( "file9.txt" );
+		
+		return ret;
 	}
 	
 	virtual void Save( std::ofstream & file ) const override

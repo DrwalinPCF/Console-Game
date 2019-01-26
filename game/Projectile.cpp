@@ -9,7 +9,7 @@ void Projectile::SetVelocity( Vector direction, unsigned velocity, int timeToDes
 {
 	this->direction = direction;
 	this->velocity = velocity;
-	this->timeToDespawn = timeToDespawn;
+	this->timeToDespawn = clock() + timeToDespawn;
 }
 
 bool Projectile::IsWalkable() const
@@ -22,7 +22,7 @@ bool Projectile::NeedTick() const
 	return true;
 }
 
-void Projectile::Draw( unsigned deltaTime, class Drawer * drawer )
+void Projectile::Draw( unsigned currentSecond, class Drawer * drawer )
 {
 	Vector delta( 0, 0 );
 	if( this->changedPositionBy.x != 0 )
@@ -40,39 +40,15 @@ void Projectile::Draw( unsigned deltaTime, class Drawer * drawer )
 		if( beg == Vector(0,0) )
 			break;
 	}
+	
+	this->changedPositionBy = Vector( 0, 0 );
 }
 
-void Projectile::Tick( unsigned deltaTime )
+unsigned Projectile::Tick()
 {
-	this->changedPositionBy = Vector( 0, 0 );
-	
-	this->timeToDespawn -= deltaTime;
-	if( this->timeToDespawn <= 0 )
+	if( this->timeToDespawn <= clock() )
 	{
 		this->world->QueueRemoveActor( this->GetName() );
-	}
-	
-	this->movementCooldown += deltaTime;
-	while( this->movementCooldown >= 1000/this->velocity )
-	{
-		std::set<Actor*> targets;
-		this->world->GetMap()->GetActors( this->GetPos(), this->GetPos(), {this}, targets );
-		for( auto it = targets.begin(); it != targets.end(); ++it )
-		{
-			if( (*it)->IsWalkable() == false )
-			{
-				this->world->QueueRemoveActor( this->GetName() );
-				Character * ch = dynamic_cast<Character*>(*it);
-				if( ch != nullptr )
-				{
-					ch->DamageAbsorb( 31.1f );
-				}
-			}
-		}
-		
-		this->movementCooldown -= 1000/this->velocity;
-		this->Move( this->direction );
-		this->changedPositionBy -= this->direction;
 	}
 	
 	std::set<Actor*> targets;
@@ -89,6 +65,11 @@ void Projectile::Tick( unsigned deltaTime )
 			}
 		}
 	}
+	
+	this->Move( this->direction );
+	this->changedPositionBy -= this->direction;
+	
+	return 1000/this->velocity;
 }
 
 void Projectile::Save( std::ofstream & file ) const
@@ -99,7 +80,6 @@ void Projectile::Save( std::ofstream & file ) const
 	file << this->direction.y << " ";
 	
 	file << this->velocity << " ";
-	file << this->movementCooldown << " ";
 	file << this->timeToDespawn << " ";
 	
 	file << this->changedPositionBy.x << " ";
@@ -114,8 +94,6 @@ void Projectile::Load( std::ifstream & file )
 	file >> this->direction.y;
 	
 	file >> this->velocity;
-	file >> this->movementCooldown;
-	file >> this->timeToDespawn;
 	
 	file >> this->changedPositionBy.x;
 	file >> this->changedPositionBy.y;
@@ -124,10 +102,10 @@ void Projectile::Load( std::ifstream & file )
 void Projectile::Spawn( const std::string & name, const Vector & pos, const Vector & size )
 {
 	Actor::Spawn( name, pos, size );
-	this->movementCooldown = 0;
 	this->direction = Vector( 1, 0 );
 	this->velocity = 7;
-	this->timeToDespawn = 1000;
+	this->timeToDespawn = clock() + 1000;
+	this->changedPositionBy = Vector(0,0);
 }
 
 void Projectile::Despawn()

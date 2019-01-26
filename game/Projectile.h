@@ -11,8 +11,7 @@ protected:
 	
 	Vector direction;
 	unsigned velocity;
-	int movementCooldown;
-	int timeToDespawn;
+	unsigned timeToDespawn;
 	Vector changedPositionBy;
 	
 public:
@@ -22,8 +21,8 @@ public:
 	virtual bool IsWalkable() const override;
 	virtual bool NeedTick() const override;
 	
-	virtual void Draw( unsigned deltaTime, class Drawer * drawer ) override;
-	virtual void Tick( unsigned deltaTime ) override;
+	virtual void Draw( unsigned currentSecond, class Drawer * drawer ) override;
+	virtual unsigned Tick() override;
 	
 	virtual void Save( std::ofstream & file ) const override;
 	virtual void Load( std::ifstream & file ) override;
