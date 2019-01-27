@@ -13,7 +13,7 @@ void World2::DrawGUI( Window * window )
 		if( player )
 		{
 			window->Print( Vector( 1, 1 ), "Player:" );
-			window->Print( Vector( 5, 2 ), "Hp: %0.4f / %0.3f", player->GetHP(), player->GetMaxHP() );
+			window->Print( Vector( 5, 2 ), "Hp: %4i / %4i", player->GetHP(), player->GetMaxHP() );
 		}
 		else
 		{

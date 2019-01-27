@@ -43,14 +43,14 @@ public:
 			projectile->Spawn( this->world->GetNewUniqueActorName(), projectileStartPosition, Vector(1,1) );
 			
 			this->world->AddActor( projectile );
-			projectile->SetVelocity( this->direction, 20, 311*10 );
-			this->attackCooldown = clock() + 250;
+			projectile->SetVelocity( this->direction, (rand()%501)+1, 3110 );
+			this->attackCooldown = this->world->GetCurrentMoment() + 250;
 		}
 	}
 	
 	void Attack()
 	{
-		if( this->attackCooldown <= clock() )
+		if( this->attackCooldown <= this->world->GetCurrentMoment() )
 		{
 			std::set<Actor*> targets;
 			this->world->GetMap()->GetActors( this->GetPos()-Vector(1,1), this->GetPos()+this->GetSize(), {this}, targets );
@@ -62,7 +62,7 @@ public:
 					ch->DamageAbsorb( 31.1f );
 				}
 			}
-			this->attackCooldown = clock() + 250;
+			this->attackCooldown = this->world->GetCurrentMoment() + 250;
 		}
 	}
 	
@@ -71,12 +71,12 @@ public:
 		this->hp -= dmg;
 	}
 	
-	float GetHP() const
+	int GetHP() const
 	{
 		return this->hp;
 	}
 	
-	float GetMaxHP() const
+	int GetMaxHP() const
 	{
 		return this->maxHp;
 	}

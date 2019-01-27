@@ -38,10 +38,10 @@ public:
 	virtual unsigned Tick() override
 	{
 		unsigned ret = Character::Tick();
-		if( this->movementCooldown <= clock() )
+		if( this->movementCooldown <= this->world->GetCurrentMoment() )
 		{
 			this->Move( Vector( (rand()%3)-1, (rand()%3)-1 ) );
-			this->movementCooldown = clock() + 250;
+			this->movementCooldown = this->world->GetCurrentMoment() + 250;
 		}
 		return ret;
 	}

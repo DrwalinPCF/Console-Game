@@ -9,7 +9,7 @@ void Projectile::SetVelocity( Vector direction, unsigned velocity, int timeToDes
 {
 	this->direction = direction;
 	this->velocity = velocity;
-	this->timeToDespawn = clock() + timeToDespawn;
+	this->timeToDespawn = this->world->GetCurrentMoment() + timeToDespawn;
 }
 
 bool Projectile::IsWalkable() const
@@ -46,7 +46,7 @@ void Projectile::Draw( unsigned currentSecond, class Drawer * drawer )
 
 unsigned Projectile::Tick()
 {
-	if( this->timeToDespawn <= clock() )
+	if( this->timeToDespawn <= this->world->GetCurrentMoment() )
 	{
 		this->world->QueueRemoveActor( this->GetName() );
 	}
@@ -104,7 +104,7 @@ void Projectile::Spawn( const std::string & name, const Vector & pos, const Vect
 	Actor::Spawn( name, pos, size );
 	this->direction = Vector( 1, 0 );
 	this->velocity = 7;
-	this->timeToDespawn = clock() + 1000;
+	this->timeToDespawn = this->world->GetCurrentMoment() + 1000;
 	this->changedPositionBy = Vector(0,0);
 }
 

@@ -42,7 +42,14 @@ protected:
 	
 	std::multimap < unsigned, Actor* > tickUpdateQueue;
 	
+	unsigned currentMoment;
+	
 public:
+	
+	inline unsigned GetCurrentMoment() const
+	{
+		return this->currentMoment;
+	}
 	
 	long long GetNumberOfActors() const;
 	

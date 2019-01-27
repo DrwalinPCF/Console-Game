@@ -138,6 +138,7 @@ bool World::Save( const std::string & fileName ) const
 	std::ofstream file( fileName );
 	if( file.good() )
 	{
+		file << this->GetCurrentMoment() << "\n";
 		for( auto it = this->actors.begin(); it != this->actors.end(); ++it )
 		{
 			file << "\n" << this->GetNameOfActorType( it->second ) << "\n{\n";
@@ -194,6 +195,7 @@ bool World::AppendLoadWithOverlapp( const std::string & fileName )
 	
 	while( !file.eof() )
 	{
+		file >> this->currentMoment;
 		std::string typeName, temp;
 		if( file.eof() )
 			break;
@@ -244,16 +246,19 @@ void World::Tick()
 {
 	if( this->updateTick )
 	{
-		std::multimap < unsigned, Actor* > toInsert;
-		auto it = this->tickUpdateQueue.begin();
-		for( ; it != this->tickUpdateQueue.end() && it->first <= clock(); ++it )
+		while( this->tickUpdateQueue.begin()->first <= this->GetCurrentMoment() )
 		{
-			unsigned nextTick = clock() + it->second->Tick();
-			auto it2 = toInsert.insert( std::pair<unsigned,Actor*>(nextTick,it->second) );
+			std::multimap < unsigned, Actor* > toInsert;
+			auto it = this->tickUpdateQueue.begin();
+			for( ; it != this->tickUpdateQueue.end() && it->first <= this->GetCurrentMoment(); ++it )
+			{
+				unsigned nextTick = this->GetCurrentMoment() + it->second->Tick();
+				auto it2 = toInsert.insert( std::pair<unsigned,Actor*>(nextTick,it->second) );
+			}
+			if( it != this->tickUpdateQueue.begin() )
+				this->tickUpdateQueue.erase( this->tickUpdateQueue.begin(), it );
+			this->tickUpdateQueue.insert( toInsert.begin(), toInsert.end() );
 		}
-		if( it != this->tickUpdateQueue.begin() )
-			this->tickUpdateQueue.erase( this->tickUpdateQueue.begin(), it );
-		this->tickUpdateQueue.insert( toInsert.begin(), toInsert.end() );
 		
 		for( auto it = this->queueActorsToRemove.begin(); it != this->queueActorsToRemove.end(); ++it )
 		{
@@ -319,6 +324,7 @@ void World::BeginLoop()
 		
 		beg = clock();
 		
+		this->currentMoment += deltaTime;
 		this->Tick();
 		this->Draw( deltaTime );
 	}
