@@ -9,15 +9,34 @@ void Map::AddActor( Actor * actor )
 	if( actor )
 	{
 		if( this->actors.find( actor ) != this->actors.end() )
+		{
 			this->UpdateActor( actor );
+		}
 		else
 		{
 			Map::Box * box = Allocate<Map::Box>();
 			box->min = actor->GetAABBmin();
 			box->max = actor->GetAABBmax();
+			
+			if( box->min.x > box->max.x )
+				std::swap( box->min.x, box->max.x );
+			if( box->min.y > box->max.y )
+				std::swap( box->min.y, box->max.y );
+			
+			box->min_ = (box->min-15)/16;
+			box->max_ = (box->max+15)/16;
 			box->actor = actor;
 			this->actors[ actor ] = box;
-			this->spaceMin[ box->min.x ][ box->min.y ].insert( box );
+			
+			Vector pos;
+			for( pos.x = box->min_.x; pos.x <= box->max_.x; ++pos.x )
+			{
+				std::map < loctype, std::set<Box*> > & it = this->space[pos.x];
+				for( pos.y = box->min_.y; pos.y <= box->max_.y; ++pos.y )
+				{
+					it[pos.y].insert( box );
+				}
+			}
 		}
 	}
 }
@@ -27,17 +46,21 @@ void Map::RemoveActor( Actor * actor )
 	auto it = this->actors.find( actor );
 	if( it != this->actors.end() )
 	{
-		this->spaceMin[ it->second->min.x ][ it->second->min.y ].erase( it->second );
-		if( this->spaceMin[ it->second->min.x ][ it->second->min.y ].empty() )
+		Box * box = it->second;
+		auto itx = this->space.begin();//upper_bound( box->min_.x );
+		auto itxe = this->space.lower_bound( box->max_.x );
+		++itxe;
+		for( ; /*itx != itxe &&*/ itx != this->space.end(); ++itx )
 		{
-			this->spaceMin[ it->second->min.x ].erase( it->second->min.y );
-			if( this->spaceMin[ it->second->min.x ].empty() )
+			auto ity = itx->second.begin();//upper_bound( box->min_.y );
+			auto itye = itx->second.lower_bound( box->max_.y );
+			++itye;
+			for( ; /*ity != itye &&*/ ity != itx->second.end(); ++ity )
 			{
-				this->spaceMin.erase( it->second->min.x );
+				ity->second.erase( box );
 			}
 		}
 		
-		//delete it->second;
 		Free( it->second );
 		it->second = nullptr;
 		this->actors.erase( it );
@@ -49,35 +72,67 @@ void Map::UpdateActor( Actor * actor )
 	auto it = this->actors.find( actor );
 	if( it != this->actors.end() )
 	{
-		this->spaceMin[ it->second->min.x ][ it->second->min.y ].erase( it->second );
-		if( this->spaceMin[ it->second->min.x ][ it->second->min.y ].empty() )
+		Box * box = it->second;
+		
+		box->min = actor->GetAABBmin();
+		box->max = actor->GetAABBmax();
+			
+		if( box->min.x > box->max.x )
+			std::swap( box->min.x, box->max.x );
+		if( box->min.y > box->max.y )
+			std::swap( box->min.y, box->max.y );
+		
+		if( box->min_ != (box->min-15)/16 || box->max_ != (box->max+15)/16 )
 		{
-			this->spaceMin[ it->second->min.x ].erase( it->second->min.y );
-			if( this->spaceMin[ it->second->min.x ].empty() )
+			box->min_ = (box->min-15)/16;
+			box->max_ = (box->max+15)/16;
+			
+			auto itx = this->space.begin();//upper_bound( box->min_.x );
+			auto itxe = this->space.lower_bound( box->max_.x );
+			++itxe;
+			for( ; /*itx != itxe &&*/ itx != this->space.end(); ++itx )
 			{
-				this->spaceMin.erase( it->second->min.x );
+				auto ity = itx->second.begin();//upper_bound( box->min_.y );
+				auto itye = itx->second.lower_bound( box->max_.y );
+				++itye;
+				for( ; /*ity != itye &&*/ ity != itx->second.end(); ++ity )
+				{
+					ity->second.erase( box );
+				}
+			}
+			
+			Vector pos;
+			for( pos.x = box->min_.x; pos.x <= box->max_.x; ++pos.x )
+			{
+				std::map < loctype, std::set<Box*> > & it = this->space[pos.x];
+				for( pos.y = box->min_.y; pos.y <= box->max_.y; ++pos.y )
+				{
+					it[pos.y].insert( box );
+				}
 			}
 		}
-		
-		it->second->min = actor->GetAABBmin();
-		it->second->max = actor->GetAABBmax();
-		this->spaceMin[ it->second->min.x ][ it->second->min.y ].insert( it->second );
+	}
+	else
+	{
+		this->AddActor( actor );
 	}
 }
 
 void Map::GetActors( const Vector & min, const Vector & max, const std::set<Actor*> & ignoreActors, std::set<Actor*> & ret )
 {
-	auto itBegX = this->spaceMin.begin();
-	auto itEndX = this->spaceMin.lower_bound( max.x + 1 );
-	
-	for( ; itBegX != itEndX; ++itBegX )
+	Vector min_ = (min-15)/16;
+	Vector max_ = (max+15)/16;
+	auto itx = this->space.begin();//upper_bound( min_.x );
+	auto itxe = this->space.lower_bound( max_.x );
+	++itxe;
+	for( ; /*itx != itxe &&*/ itx != this->space.end(); ++itx )
 	{
-		auto itBegY = itBegX->second.begin();
-		
-		auto itEndY = itBegX->second.lower_bound( max.y + 1 );
-		for( ; itBegY != itEndY; ++itBegY )
+		auto ity = itx->second.begin();//upper_bound( min_.y );
+		auto itye = itx->second.lower_bound( max_.y );
+		++itye;
+		for( ; /*ity != itye &&*/ ity != itx->second.end(); ++ity )
 		{
-			for( auto it = itBegY->second.begin(); it != itBegY->second.end(); ++it )
+			for( auto it = ity->second.begin(); it != ity->second.end(); ++it )
 			{
 				if( (*it)->actor->InBounds( min, max ) )
 					if( ignoreActors.find((*it)->actor) == ignoreActors.end() )
@@ -89,17 +144,19 @@ void Map::GetActors( const Vector & min, const Vector & max, const std::set<Acto
 
 bool Map::IsSpaceWalkable( const Vector & min, const Vector & max, const std::set<Actor*> & ignoreActors )
 {
-	auto itBegX = this->spaceMin.begin();
-	auto itEndX = this->spaceMin.lower_bound( max.x + 1 );
-	
-	for( ; itBegX != itEndX; ++itBegX )
+	Vector min_ = (min-15)/16;
+	Vector max_ = (max+15)/16;
+	auto itx = this->space.begin();//upper_bound( min_.x );
+	auto itxe = this->space.lower_bound( max_.x );
+	++itxe;
+	for( ; /*itx != itxe &&*/ itx != this->space.end(); ++itx )
 	{
-		auto itBegY = itBegX->second.begin();
-		
-		auto itEndY = itBegX->second.lower_bound( max.y + 1 );
-		for( ; itBegY != itEndY; ++itBegY )
+		auto ity = itx->second.begin();//upper_bound( min_.y );
+		auto itye = itx->second.lower_bound( max_.y );
+		++itye;
+		for( ; /*ity != itye &&*/ ity != itx->second.end(); ++ity )
 		{
-			for( auto it = itBegY->second.begin(); it != itBegY->second.end(); ++it )
+			for( auto it = ity->second.begin(); it != ity->second.end(); ++it )
 			{
 				if( (*it)->actor->IsWalkable() == false )
 					if( (*it)->actor->InBounds( min, max ) )
@@ -116,10 +173,9 @@ void Map::Clear()
 {
 	for( auto it = actors.begin(); it != actors.end(); ++it )
 		Free( it->second );
-		//delete it->second;
 	actors.clear();
-	spaceMin.clear();
-	world = nullptr;
+	space.clear();
+	world = NULL;
 }
 	
 class World * Map::GetWorld()
@@ -134,7 +190,7 @@ void Map::SetWorld( class World * world )
 
 Map::Map()
 {
-	world = nullptr;
+	world = NULL;
 }
 
 Map::~Map()

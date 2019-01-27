@@ -14,6 +14,7 @@ void World2::DrawGUI( Window * window )
 		{
 			window->Print( Vector( 1, 1 ), "Player:" );
 			window->Print( Vector( 5, 2 ), "Hp: %4i / %4i", player->GetHP(), player->GetMaxHP() );
+			window->Print( Vector( 5, 3 ), "Pos: ( %lli, %lli )", player->GetPos().x, player->GetPos().y );
 		}
 		else
 		{

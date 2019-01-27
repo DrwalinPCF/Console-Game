@@ -312,13 +312,13 @@ void World::BeginLoop()
 	while( this->end == false )
 	{
 		unsigned deltaTime = clock() - beg;
-		if( deltaTime < 10 )
+		if( deltaTime < 17 )
 		{
-			Sleep( 10 - deltaTime );
+			Sleep( 17 - deltaTime );
 		}
 		deltaTime = clock() - beg;
-		if( deltaTime < 10 )
-			deltaTime = 10;
+		if( deltaTime < 17 )
+			deltaTime = 17;
 		else if( deltaTime > 100 )
 			deltaTime = 100;
 		

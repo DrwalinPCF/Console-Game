@@ -2,6 +2,7 @@
 #ifndef MAP_H
 #define MAP_H
 
+#include <unordered_map>
 #include <map>
 #include <vector>
 #include <set>
@@ -18,12 +19,14 @@ private:
 	{
 		Vector min;
 		Vector max;
+		Vector min_;
+		Vector max_;
 		Actor * actor;
 	};
 	
-	std::map < loctype, std::map < loctype, std::set<Box*> > > spaceMin;
+	std::map < loctype, std::map < loctype, std::set<Box*> > > space;
 	
-	std::map < Actor*, Box* > actors;
+	std::unordered_map < Actor*, Box* > actors;
 	
 	class World * world;
 	

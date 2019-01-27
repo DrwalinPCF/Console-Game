@@ -12,8 +12,8 @@ class Character : public Actor
 {
 protected:
 	
-	int hp;
 	int maxHp;
+	int hp;
 	
 	int attackCooldown;
 	
