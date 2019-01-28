@@ -3,13 +3,15 @@
 #define MAP_H
 
 #include <unordered_map>
-#include <map>
+#include <unordered_set>
 #include <vector>
 #include <set>
 
 #include "Vector.hpp"
 
 #include "Actor.h"
+
+#include "Quadtree.h"
 
 class Map
 {
@@ -23,22 +25,15 @@ private:
 	public:
 		Vector min;
 		Vector max;
-		Vector min_;
-		Vector max_;
 		Actor * actor;
 		Box();
 	};
 	
-	std::map < loctype, std::map < loctype, std::set<Box*> > > space;
+	Quadtree< std::unordered_set<Actor*> > space;
 	
 	std::unordered_map < Actor*, Box* > actors;
 	
-	class World * world;
-	
 public:
-	
-	class World * GetWorld();
-	void SetWorld( class World * world );
 	
 	void AddActor( Actor * actor );
 	void RemoveActor( Actor * actor );

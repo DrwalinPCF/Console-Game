@@ -240,7 +240,6 @@ bool World::AppendLoadWithOverlapp( const std::string & fileName )
 bool World::Load( const std::string & fileName )
 {
 	this->map->Clear();
-	this->map->SetWorld( this );
 	for( auto it = this->actors.begin(); it != this->actors.end(); ++it )
 		Free( it->second );
 	actors.clear();
@@ -376,7 +375,6 @@ World::World() :
 	}
 	
 	this->map = Allocate<Map>();
-	this->map->SetWorld( this );
 	this->screen = Allocate<Window>();
 	this->mapScr = Allocate<Window>();
 	this->guiScr = Allocate<Window>();
