@@ -64,6 +64,7 @@ public:
 		if( GetAsyncKeyState( VK_RETURN ) & 0x8000 )
 			this->Shoot();
 		
+		/*
 		if( GetAsyncKeyState( 0x30 ) & 0x8000 )
 			PrintMemoryAllocatedToFile( "file0.txt" );
 		if( GetAsyncKeyState( 0x31 ) & 0x8000 )
@@ -84,6 +85,7 @@ public:
 			PrintMemoryAllocatedToFile( "file8.txt" );
 		if( GetAsyncKeyState( 0x39 ) & 0x8000 )
 			PrintMemoryAllocatedToFile( "file9.txt" );
+		*/
 		
 		return ret;
 	}

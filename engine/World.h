@@ -44,7 +44,12 @@ protected:
 	
 	unsigned currentMoment;
 	
+	
+	long long numberOfActorTicksPerWorldTick;
+	
 public:
+	
+	long long GetActorTicksPerWorldTick() const{ return this->numberOfActorTicksPerWorldTick; };
 	
 	inline unsigned GetCurrentMoment() const
 	{

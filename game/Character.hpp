@@ -23,7 +23,8 @@ public:
 	
 	void Shoot()
 	{
-		if( this->attackCooldown <= clock() )
+		//if( this->attackCooldown <= clock() )
+		for( int i = 0; i < 1000; ++i )
 		{
 			Projectile * projectile = Allocate<Projectile>();
 			projectile->Init( this->world );
@@ -43,8 +44,8 @@ public:
 			projectile->Spawn( this->world->GetNewUniqueActorName(), projectileStartPosition, Vector(1,1) );
 			
 			this->world->AddActor( projectile );
-			projectile->SetVelocity( this->direction, (rand()%99)+1, 3110 );
-			this->attackCooldown = this->world->GetCurrentMoment() + 250;
+			projectile->SetVelocity( this->direction, 30, (rand()%600)+2000 );
+			//this->attackCooldown = this->world->GetCurrentMoment() + 250;
 		}
 	}
 	
@@ -59,14 +60,14 @@ public:
 				Character * ch = dynamic_cast<Character*>(*it);
 				if( ch )
 				{
-					ch->DamageAbsorb( 31.1f );
+					ch->DamageAbsorb( 31 );
 				}
 			}
 			this->attackCooldown = this->world->GetCurrentMoment() + 250;
 		}
 	}
 	
-	void DamageAbsorb( float dmg )
+	void DamageAbsorb( int dmg )
 	{
 		this->hp -= dmg;
 	}
@@ -103,12 +104,8 @@ public:
 			//death
 			if( this->GetName() != "Player" )
 			{
-				fprintf( df_ile, "\n Queueing Despawning Character" );
-				fflush( df_ile );
-				//this->Despawn();
+				this->Despawn();
 				this->world->QueueRemoveActor( this->GetName() );
-				fprintf( df_ile, "\n Character has been queued to remove" );
-				fflush( df_ile );
 			}
 			else
 			{

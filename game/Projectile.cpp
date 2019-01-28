@@ -48,12 +48,9 @@ unsigned Projectile::Tick()
 {
 	if( this->timeToDespawn <= this->world->GetCurrentMoment() )
 	{
-		fprintf( df_ile, "\n Queueing Projectile to remove" );
-		fflush( df_ile );
 		this->world->QueueRemoveActor( this->GetName() );
-		fprintf( df_ile, "\n Projectile has been queued to remove" );
-		fflush( df_ile );
-		return 1000;
+		this->Despawn();
+		return 10000;
 	}
 	
 	std::set<Actor*> targets;

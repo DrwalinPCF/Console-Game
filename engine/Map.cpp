@@ -11,12 +11,8 @@ Map::Box::Box()
 	actor = NULL;
 }
 
-FILE * df_ile = NULL;
-
 void Map::AddActor( Actor * actor )
 {
-	if( df_ile == NULL )
-		df_ile = fopen( "DebugFile.txt", "w" );
 	if( actor )
 	{
 		if( this->actors.find( actor ) != this->actors.end() )

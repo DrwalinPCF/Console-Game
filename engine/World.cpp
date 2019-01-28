@@ -73,7 +73,7 @@ void World::AddActor( Actor * ptr )
 		this->actors[ ptr->GetName() ] = ptr;
 		this->map->AddActor( ptr );
 		if( ptr->NeedTick() == true )
-			this->tickUpdateQueue.insert( std::pair<unsigned,Actor*>( clock(), ptr ) );
+			this->tickUpdateQueue.insert( std::pair<unsigned,Actor*>( this->GetCurrentMoment(), ptr ) );
 	}
 }
 
@@ -87,7 +87,7 @@ void World::AddActor( std::string name, Vector pos, Vector size, Actor * ptr )
 		this->actors[ name ] = ptr;
 		this->map->AddActor( ptr );
 		if( ptr->NeedTick() == true )
-			this->tickUpdateQueue.insert( std::pair<unsigned,Actor*>( clock(), ptr ) );
+			this->tickUpdateQueue.insert( std::pair<unsigned,Actor*>( this->GetCurrentMoment(), ptr ) );
 	}
 }
 
@@ -96,9 +96,6 @@ void World::DestroyActor( const std::string & name )
 	auto it = this->actors.find( name );
 	if( it != this->actors.end() )
 	{
-		fprintf( df_ile, "\n DestroyActor: 0x%p - %s", it->second, name.c_str() );
-		fflush( df_ile );
-		
 		for( auto it1 = this->tickUpdateQueue.begin(); it1 != this->tickUpdateQueue.end(); ++it1 )
 		{
 			if( it1->second == it->second )
@@ -106,12 +103,10 @@ void World::DestroyActor( const std::string & name )
 				it1 = this->tickUpdateQueue.erase( it1 );
 			}
 		}
-		//it->second->Deinit();
+		it->second->Deinit();
 		this->map->RemoveActor( it->second );
 		Free( it->second );
 		this->actors.erase( it );
-		fprintf( df_ile, "\n Actor has been destroyed" );
-		fflush( df_ile );
 	}
 }
 
@@ -248,6 +243,7 @@ bool World::Load( const std::string & fileName )
 
 void World::Tick()
 {
+	this->numberOfActorTicksPerWorldTick = 0;
 	if( this->updateTick )
 	{
 		while( this->tickUpdateQueue.size() > 0 && this->tickUpdateQueue.begin()->first <= this->GetCurrentMoment() )
@@ -256,9 +252,12 @@ void World::Tick()
 			auto it = this->tickUpdateQueue.begin();
 			for( ; it != this->tickUpdateQueue.end() && it->first <= this->GetCurrentMoment(); ++it )
 			{
-				unsigned nextTick = this->GetCurrentMoment() + it->second->Tick();
+				this->numberOfActorTicksPerWorldTick++;
+				unsigned nextTick = /*this->GetCurrentMoment()*/ it->first + it->second->Tick();
 				if( this->queueActorsToRemove.find( it->second->GetName() ) == this->queueActorsToRemove.end() )
 				{
+					if( nextTick < it->first+10 )
+						nextTick = it->first+10;
 					toInsert.insert( std::pair<unsigned,Actor*>(nextTick,it->second) );
 				}
 			}
@@ -267,11 +266,14 @@ void World::Tick()
 			this->tickUpdateQueue.insert( toInsert.begin(), toInsert.end() );
 		}
 		
-		for( auto it = this->queueActorsToRemove.begin(); it != this->queueActorsToRemove.end(); ++it )
 		{
-			this->DestroyActor( *it );
+			auto it = this->queueActorsToRemove.begin();
+			for( int i = 0; it != this->queueActorsToRemove.end() && i < 100; ++it )
+			{
+				this->DestroyActor( *it );
+			}
+			this->queueActorsToRemove.erase( this->queueActorsToRemove.begin(), it );
 		}
-		this->queueActorsToRemove.clear();
 	}
 }
 
@@ -320,15 +322,15 @@ void World::BeginLoop()
 	while( this->end == false )
 	{
 		unsigned deltaTime = clock() - beg;
-		if( deltaTime < 10 )
+		if( deltaTime < 30 )
 		{
-			Sleep( 10 - deltaTime );
+			Sleep( 30 - deltaTime );
 		}
 		deltaTime = clock() - beg;
-		if( deltaTime < 10 )
-			deltaTime = 10;
-		else if( deltaTime > 100 )
-			deltaTime = 100;
+		if( deltaTime < 30 )
+			deltaTime = 30;
+		else if( deltaTime > 300 )
+			deltaTime = 300;
 		
 		beg = clock();
 		

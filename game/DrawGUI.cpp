@@ -33,6 +33,7 @@ void World2::DrawGUI( Window * window )
 	window->Print( "\n fps = %i / %f = %f", ticks, float(clock())*0.001f, float(ticks) / (float(clock())*0.001f) );
 	
 	window->Print( "\n Number of Actors: %lli ", this->GetNumberOfActors() );
+	window->Print( "\n Actor::Tick per world tick: %lli ", this->GetActorTicksPerWorldTick() );
 }
 
 #endif
