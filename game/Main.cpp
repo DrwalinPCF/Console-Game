@@ -4,15 +4,15 @@
 
 #include "../engine/Utility.hpp"
 
+#include "../engine/Map.cpp"
+#include "../engine/Actor.cpp"
+#include "../engine/World.cpp"
+
 #include "Block.hpp"
 #include "Player.hpp"
 #include "Character.hpp"
 #include "World2.hpp"
 #include "Mob.hpp"
-
-#include "../engine/Actor.cpp"
-#include "../engine/Map.cpp"
-#include "../engine/World.cpp"
 
 #include "Projectile.cpp"
 

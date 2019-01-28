@@ -33,7 +33,7 @@ std::string World::GetNewUniqueActorName() const
 
 void World::QueueRemoveActor( std::string name )
 {
-	this->queueActorsToRemove.emplace_back( name );
+	this->queueActorsToRemove.insert( name );
 }
 
 Map * World::GetMap()
@@ -96,6 +96,9 @@ void World::DestroyActor( const std::string & name )
 	auto it = this->actors.find( name );
 	if( it != this->actors.end() )
 	{
+		fprintf( df_ile, "\n DestroyActor: 0x%p - %s", it->second, name.c_str() );
+		fflush( df_ile );
+		
 		for( auto it1 = this->tickUpdateQueue.begin(); it1 != this->tickUpdateQueue.end(); ++it1 )
 		{
 			if( it1->second == it->second )
@@ -103,10 +106,12 @@ void World::DestroyActor( const std::string & name )
 				it1 = this->tickUpdateQueue.erase( it1 );
 			}
 		}
-		it->second->Deinit();
+		//it->second->Deinit();
 		this->map->RemoveActor( it->second );
 		Free( it->second );
 		this->actors.erase( it );
+		fprintf( df_ile, "\n Actor has been destroyed" );
+		fflush( df_ile );
 	}
 }
 
@@ -246,14 +251,17 @@ void World::Tick()
 {
 	if( this->updateTick )
 	{
-		while( this->tickUpdateQueue.begin()->first <= this->GetCurrentMoment() )
+		while( this->tickUpdateQueue.size() > 0 && this->tickUpdateQueue.begin()->first <= this->GetCurrentMoment() )
 		{
 			std::multimap < unsigned, Actor* > toInsert;
 			auto it = this->tickUpdateQueue.begin();
 			for( ; it != this->tickUpdateQueue.end() && it->first <= this->GetCurrentMoment(); ++it )
 			{
 				unsigned nextTick = this->GetCurrentMoment() + it->second->Tick();
-				auto it2 = toInsert.insert( std::pair<unsigned,Actor*>(nextTick,it->second) );
+				if( this->queueActorsToRemove.find( it->second->GetName() ) == this->queueActorsToRemove.end() )
+				{
+					toInsert.insert( std::pair<unsigned,Actor*>(nextTick,it->second) );
+				}
 			}
 			if( it != this->tickUpdateQueue.begin() )
 				this->tickUpdateQueue.erase( this->tickUpdateQueue.begin(), it );
@@ -264,6 +272,7 @@ void World::Tick()
 		{
 			this->DestroyActor( *it );
 		}
+		this->queueActorsToRemove.clear();
 	}
 }
 
@@ -312,13 +321,13 @@ void World::BeginLoop()
 	while( this->end == false )
 	{
 		unsigned deltaTime = clock() - beg;
-		if( deltaTime < 17 )
+		if( deltaTime < 10 )
 		{
-			Sleep( 17 - deltaTime );
+			Sleep( 10 - deltaTime );
 		}
 		deltaTime = clock() - beg;
-		if( deltaTime < 17 )
-			deltaTime = 17;
+		if( deltaTime < 10 )
+			deltaTime = 10;
 		else if( deltaTime > 100 )
 			deltaTime = 100;
 		

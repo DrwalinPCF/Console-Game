@@ -57,6 +57,7 @@ public:
 	
 	virtual void Despawn() override
 	{
+		Actor::Despawn();
 	}
 	
 	virtual void Init( class World * world ) override

@@ -43,7 +43,7 @@ public:
 			projectile->Spawn( this->world->GetNewUniqueActorName(), projectileStartPosition, Vector(1,1) );
 			
 			this->world->AddActor( projectile );
-			projectile->SetVelocity( this->direction, (rand()%501)+1, 3110 );
+			projectile->SetVelocity( this->direction, (rand()%99)+1, 3110 );
 			this->attackCooldown = this->world->GetCurrentMoment() + 250;
 		}
 	}
@@ -57,7 +57,7 @@ public:
 			for( auto it = targets.begin(); it != targets.end(); ++it )
 			{
 				Character * ch = dynamic_cast<Character*>(*it);
-				if( ch != nullptr )
+				if( ch )
 				{
 					ch->DamageAbsorb( 31.1f );
 				}
@@ -103,8 +103,12 @@ public:
 			//death
 			if( this->GetName() != "Player" )
 			{
+				fprintf( df_ile, "\n Queueing Despawning Character" );
+				fflush( df_ile );
+				//this->Despawn();
 				this->world->QueueRemoveActor( this->GetName() );
-				this->Despawn();
+				fprintf( df_ile, "\n Character has been queued to remove" );
+				fflush( df_ile );
 			}
 			else
 			{
@@ -146,7 +150,7 @@ public:
 	
 	virtual void Despawn() override
 	{
-		Character::Despawn();
+		Actor::Despawn();
 	}
 	
 	virtual void Init( class World * world ) override

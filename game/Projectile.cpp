@@ -48,7 +48,12 @@ unsigned Projectile::Tick()
 {
 	if( this->timeToDespawn <= this->world->GetCurrentMoment() )
 	{
+		fprintf( df_ile, "\n Queueing Projectile to remove" );
+		fflush( df_ile );
 		this->world->QueueRemoveActor( this->GetName() );
+		fprintf( df_ile, "\n Projectile has been queued to remove" );
+		fflush( df_ile );
+		return 1000;
 	}
 	
 	std::set<Actor*> targets;
@@ -59,7 +64,7 @@ unsigned Projectile::Tick()
 		{
 			this->world->QueueRemoveActor( this->GetName() );
 			Character * ch = dynamic_cast<Character*>(*it);
-			if( ch != nullptr )
+			if( ch )
 			{
 				ch->DamageAbsorb( 31.1f );
 			}
@@ -110,6 +115,7 @@ void Projectile::Spawn( const std::string & name, const Vector & pos, const Vect
 
 void Projectile::Despawn()
 {
+	Actor::Despawn();
 }
 
 void Projectile::Init( class World * world )

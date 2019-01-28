@@ -21,7 +21,7 @@ protected:
 	
 	Map * map;
 	
-	std::vector < std::string > queueActorsToRemove;
+	std::set < std::string > queueActorsToRemove;
 	std::map < std::string, Actor* > actors;
 	
 	std::map < std::string, Actor* > registeredActors;

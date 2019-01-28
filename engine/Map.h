@@ -15,13 +15,18 @@ class Map
 {
 private:
 	
-	struct Box
+	const Vector MODIFIER;
+	const long long DIVIDER;
+	
+	class Box
 	{
+	public:
 		Vector min;
 		Vector max;
 		Vector min_;
 		Vector max_;
 		Actor * actor;
+		Box();
 	};
 	
 	std::map < loctype, std::map < loctype, std::set<Box*> > > space;
@@ -40,8 +45,8 @@ public:
 	
 	void UpdateActor( Actor * actor );
 	
-	void GetActors( const Vector & min, const Vector & max, const std::set<Actor*> & ignoreActors, std::set<Actor*> & ret );
-	bool IsSpaceWalkable( const Vector & min, const Vector & max, const std::set<Actor*> & ignoreActors = std::set<Actor*>() );
+	void GetActors( const Vector & min, const Vector & max, const std::set<Actor*> & ignoreActors, std::set<Actor*> & ret ) const;
+	bool IsSpaceWalkable( const Vector & min, const Vector & max, const std::set<Actor*> & ignoreActors = std::set<Actor*>() ) const;
 	
 	void Clear();
 	

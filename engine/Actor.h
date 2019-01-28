@@ -21,8 +21,8 @@ public:
 	
 	std::string GetName() const;
 	
-	virtual bool IsWalkable() const = 0;
-	virtual bool NeedTick() const = 0;
+	virtual bool IsWalkable() const{return false;}//= 0;
+	virtual bool NeedTick() const{return true;}//= 0;
 	
 	
 	bool SetPos( const Vector & loc );
@@ -32,7 +32,7 @@ public:
 	Vector GetSize() const;
 	
 	
-	virtual void Draw( unsigned deltaTime, class Drawer * drawer ) = 0;
+	virtual void Draw( unsigned deltaTime, class Drawer * drawer ){}// = 0;
 	Vector GetAABBmin() const;
 	Vector GetAABBmax() const;
 	
@@ -41,7 +41,7 @@ public:
 	virtual void Save( std::ofstream & file ) const;
 	virtual void Load( std::ifstream & file );
 	
-	virtual unsigned Tick() = 0;
+	virtual unsigned Tick(){return 50;}// = 0;
 	
 	virtual void Spawn( const std::string & name, const Vector & pos, const Vector & size );
 	virtual void Despawn();
@@ -50,8 +50,8 @@ public:
 	virtual void Deinit();
 	
 	
-	virtual std::string GetTypeName() = 0;		// return name of the class
-	virtual Actor * Make() = 0;					// return new T(); for every type
+	virtual std::string GetTypeName(){return "Actor";}// = 0;		// return name of the class
+	virtual Actor * Make(){return NULL;}// = 0;					// return new T(); for every type
 	virtual ~Actor();
 	Actor();
 };
