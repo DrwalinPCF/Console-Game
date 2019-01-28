@@ -96,7 +96,7 @@ public:
 	}
 	
 	
-	inline bool operator < ( const Vector & other )
+	inline bool operator < ( const Vector & other ) const
 	{
 		if( this->x < other.x )
 			return true;
@@ -105,7 +105,7 @@ public:
 		return false;
 	}
 	
-	inline bool operator > ( const Vector & other )
+	inline bool operator > ( const Vector & other ) const
 	{
 		if( this->x > other.x )
 			return true;
@@ -114,7 +114,7 @@ public:
 		return false;
 	}
 	
-	inline bool operator <= ( const Vector & other )
+	inline bool operator <= ( const Vector & other ) const
 	{
 		if( this->x < other.x )
 			return true;
@@ -123,7 +123,7 @@ public:
 		return false;
 	}
 	
-	inline bool operator >= ( const Vector & other )
+	inline bool operator >= ( const Vector & other ) const
 	{
 		if( this->x > other.x )
 			return true;
@@ -132,12 +132,12 @@ public:
 		return false;
 	}
 	
-	inline bool operator == ( const Vector & other )
+	inline bool operator == ( const Vector & other ) const
 	{
 		return this->x == other.x && this->y == other.y;
 	}
 	
-	inline bool operator != ( const Vector & other )
+	inline bool operator != ( const Vector & other ) const
 	{
 		return this->x != other.x || this->y != other.y;
 	}

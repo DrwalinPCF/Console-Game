@@ -6,12 +6,11 @@
 #include <unordered_set>
 #include <vector>
 #include <set>
+#include <map>
 
 #include "Vector.hpp"
 
 #include "Actor.h"
-
-#include "Quadtree.h"
 
 class Map
 {
@@ -29,7 +28,7 @@ private:
 		Box();
 	};
 	
-	Quadtree< std::unordered_set<Actor*> > space;
+	std::map < Vector, std::unordered_set<Actor*> > space;
 	
 	std::unordered_map < Actor*, Box* > actors;
 	

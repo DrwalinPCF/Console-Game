@@ -17,8 +17,6 @@ void Map::AddActor( Actor * actor )
 {
 	if( df_ile == NULL )
 		df_ile = fopen( "DebugFile.txt", "w" );
-	//fprintf( df_ile, "\nA - 0x%p", actor );
-	//fflush( df_ile );
 	if( actor )
 	{
 		if( this->actors.find( actor ) != this->actors.end() )
@@ -46,7 +44,7 @@ void Map::AddActor( Actor * actor )
 				{
 					for( pos.y = box->min.y; pos.y <= box->max.y; ++pos.y )
 					{
-						this->space.Access( pos.x, pos.y ).insert( actor );
+						this->space[pos].insert( actor );
 					}
 				}
 			}
@@ -68,10 +66,15 @@ void Map::RemoveActor( Actor * actor )
 			{
 				for( pos.y = box->min.y; pos.y <= box->max.y; ++pos.y )
 				{
-					std::unordered_set<Actor*> & ref = this->space.Access( pos.x, pos.y );
-					ref.erase( actor );
-					if( ref.empty() )
-						this->space.Erase( pos.x, pos.y );
+					auto it = this->space.find( pos );
+					if( it != this->space.end() )
+					{
+						it->second.erase( actor );
+						if( it->second.empty() )
+						{
+							this->space.erase( it );
+						}
+					}
 				}
 			}
 			
@@ -96,10 +99,15 @@ void Map::UpdateActor( Actor * actor )
 			{
 				for( pos.y = box->min.y; pos.y <= box->max.y; ++pos.y )
 				{
-					std::unordered_set<Actor*> & ref = this->space.Access( pos.x, pos.y );
-					ref.erase( actor );
-					if( ref.empty() )
-						this->space.Erase( pos.x, pos.y );
+					auto it = this->space.find( pos );
+					if( it != this->space.end() )
+					{
+						it->second.erase( actor );
+						if( it->second.empty() )
+						{
+							this->space.erase( it );
+						}
+					}
 				}
 			}
 			
@@ -115,7 +123,7 @@ void Map::UpdateActor( Actor * actor )
 			{
 				for( pos.y = box->min.y; pos.y <= box->max.y; ++pos.y )
 				{
-					this->space.Access( pos.x, pos.y ).insert( actor );
+					this->space[pos].insert( actor );
 				}
 			}
 		}
@@ -133,14 +141,17 @@ void Map::GetActors( const Vector & min, const Vector & max, const std::set<Acto
 	{
 		for( pos.y = min.y; pos.y <= max.y; ++pos.y )
 		{
-			const std::unordered_set<Actor*> & ref = this->space.Access( pos.x, pos.y );
-			for( auto it = ref.begin(); it != ref.end(); ++it )
+			auto it_ = this->space.find( pos );
+			if( it_ != this->space.end() )
 			{
-				if( (*it)->InBounds( min, max ) )
+				for( auto it = it_->second.begin(); it != it_->second.end(); ++it )
 				{
-					if( ignoreActors.find(*it) == ignoreActors.end() )
+					if( (*it)->InBounds( min, max ) )
 					{
-						ret.insert( *it );
+						if( ignoreActors.find(*it) == ignoreActors.end() )
+						{
+							ret.insert( *it );
+						}
 					}
 				}
 			}
@@ -155,16 +166,19 @@ bool Map::IsSpaceWalkable( const Vector & min, const Vector & max, const std::se
 	{
 		for( pos.y = min.y; pos.y <= max.y; ++pos.y )
 		{
-			const std::unordered_set<Actor*> & ref = this->space.Access( pos.x, pos.y );
-			for( auto it = ref.begin(); it != ref.end(); ++it )
+			auto it_ = this->space.find( pos );
+			if( it_ != this->space.end() )
 			{
-				if( (*it)->IsWalkable() == false )
+				for( auto it = it_->second.begin(); it != it_->second.end(); ++it )
 				{
-					if( (*it)->InBounds( min, max ) )
+					if( (*it)->IsWalkable() == false )
 					{
-						if( ignoreActors.find(*it) == ignoreActors.end() )
+						if( (*it)->InBounds( min, max ) )
 						{
-							return false;
+							if( ignoreActors.find(*it) == ignoreActors.end() )
+							{
+								return false;
+							}
 						}
 					}
 				}
@@ -179,11 +193,11 @@ void Map::Clear()
 	for( auto it = this->actors.begin(); it != this->actors.end(); ++it )
 		Free( it->second );
 	this->actors.clear();
-	this->space.Clear();
+	this->space.clear();
 }
 
 Map::Map() :
-	MODIFIER(0,0), DIVIDER(1), space(std::unordered_set<Actor*>())
+	MODIFIER(0,0), DIVIDER(1)
 {
 }
 
