@@ -50,7 +50,7 @@ unsigned Projectile::Tick()
 	{
 		this->world->QueueRemoveActor( this->GetName() );
 		this->Despawn();
-		return 10000;
+		return 100000;
 	}
 	
 	std::set<Actor*> targets;
@@ -65,6 +65,7 @@ unsigned Projectile::Tick()
 			{
 				ch->DamageAbsorb( 31.1f );
 			}
+			return 100000;
 		}
 	}
 	

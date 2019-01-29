@@ -23,8 +23,8 @@ public:
 	
 	void Shoot()
 	{
-		//if( this->attackCooldown <= clock() )
-		for( int i = 0; i < 1000; ++i )
+		if( this->attackCooldown <= clock() )
+		//for( int i = 0; i < 1000; ++i )
 		{
 			Projectile * projectile = Allocate<Projectile>();
 			projectile->Init( this->world );
@@ -44,8 +44,8 @@ public:
 			projectile->Spawn( this->world->GetNewUniqueActorName(), projectileStartPosition, Vector(1,1) );
 			
 			this->world->AddActor( projectile );
-			projectile->SetVelocity( this->direction, 30, (rand()%600)+2000 );
-			//this->attackCooldown = this->world->GetCurrentMoment() + 250;
+			projectile->SetVelocity( this->direction, 100, (rand()%600)+2000 );
+			this->attackCooldown = this->world->GetCurrentMoment() + 250;
 		}
 	}
 	
@@ -104,8 +104,9 @@ public:
 			//death
 			if( this->GetName() != "Player" )
 			{
-				this->Despawn();
 				this->world->QueueRemoveActor( this->GetName() );
+				this->Despawn();
+				return 10000;
 			}
 			else
 			{

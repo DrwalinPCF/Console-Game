@@ -256,8 +256,8 @@ void World::Tick()
 				unsigned nextTick = /*this->GetCurrentMoment()*/ it->first + it->second->Tick();
 				if( this->queueActorsToRemove.find( it->second->GetName() ) == this->queueActorsToRemove.end() )
 				{
-					if( nextTick < it->first+10 )
-						nextTick = it->first+10;
+					if( nextTick < it->first/*this->GetCurrentMoment()*/+10 )
+						nextTick = it->first/*this->GetCurrentMoment()*/+10;
 					toInsert.insert( std::pair<unsigned,Actor*>(nextTick,it->second) );
 				}
 			}
@@ -268,7 +268,7 @@ void World::Tick()
 		
 		{
 			auto it = this->queueActorsToRemove.begin();
-			for( int i = 0; it != this->queueActorsToRemove.end() && i < 100; ++it )
+			for( int i = 0; it != this->queueActorsToRemove.end() && i < 10000; ++it )
 			{
 				this->DestroyActor( *it );
 			}
@@ -322,13 +322,13 @@ void World::BeginLoop()
 	while( this->end == false )
 	{
 		unsigned deltaTime = clock() - beg;
-		if( deltaTime < 30 )
+		if( deltaTime < 20 )
 		{
-			Sleep( 30 - deltaTime );
+			Sleep( 20 - deltaTime );
 		}
 		deltaTime = clock() - beg;
-		if( deltaTime < 30 )
-			deltaTime = 30;
+		if( deltaTime < 20 )
+			deltaTime = 20;
 		else if( deltaTime > 300 )
 			deltaTime = 300;
 		
