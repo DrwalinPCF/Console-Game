@@ -23,8 +23,7 @@ public:
 	
 	void Shoot()
 	{
-		if( this->attackCooldown <= clock() )
-		//for( int i = 0; i < 1000; ++i )
+		if( this->attackCooldown <= this->world->GetCurrentMoment() )
 		{
 			Projectile * projectile = Allocate<Projectile>();
 			projectile->Init( this->world );
@@ -106,7 +105,7 @@ public:
 			{
 				this->world->QueueRemoveActor( this->GetName() );
 				this->Despawn();
-				return 10000;
+				return 1000000;
 			}
 			else
 			{
