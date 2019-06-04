@@ -12,6 +12,14 @@
 
 #include "Utility.hpp"
 
+const Actor * World::GetRegisteredActorByTypeName( const std::string & name ) const
+{
+	auto it = this->registeredActors.find( name );
+	if( it == this->registeredActors.end() )
+		return NULL;
+	return it->second;
+}
+
 long long World::GetNumberOfActors() const
 {
 	return this->actors.size();
@@ -191,45 +199,54 @@ bool World::AppendLoadWithoutOverlapp( const std::string & fileName )
 
 bool World::AppendLoadWithOverlapp( const std::string & fileName )
 {
-	std::ifstream file( fileName );
-	
-	while( !file.eof() )
+	try
 	{
+		std::ifstream file( fileName );
+		
 		file >> this->currentMoment;
-		std::string typeName, temp;
-		if( file.eof() )
-			break;
-		file >> typeName;
-		if( file.eof() )
-			break;
-		file >> temp;
-		if( file.eof() )
-			break;
-		auto it = this->registeredActors.find( typeName );
-		if( it != this->registeredActors.end() )
+		
+		while( !file.eof() )
 		{
-			Actor * newActor = it->second->Make();
-			newActor->Init( this );
-			newActor->Load( file );
-			auto it2 = this->actors.find( newActor->GetName() );
-			if( it2 != this->actors.end() )
+			std::string typeName, temp;
+			file >> typeName;
+			if( file.eof() )
+				break;
+			file >> temp;
+			if( file.eof() )
+				break;
+			auto it = this->registeredActors.find( typeName );
+			if( it != this->registeredActors.end() )
 			{
-				this->DestroyActor( it2->first );
+				Actor * newActor = it->second->Make();
+				newActor->Init( this );
+				newActor->Load( file );
+				auto it2 = this->actors.find( newActor->GetName() );
+				if( it2 != this->actors.end() )
+				{
+					this->DestroyActor( it2->first );
+				}
+				this->AddActor( newActor );
 			}
-			this->AddActor( newActor );
+			else
+			{
+				file.close();
+				return false;
+			}
+			file >> temp;
+			if( file.eof() )
+				break;
 		}
-		else
-		{
-			file.close();
-			return false;
-		}
-		file >> temp;
-		if( file.eof() )
-			break;
+		
+		file.close();
+		return true;
+	}
+	catch( const std::exception & e )
+	{
+		printf( "\n Exception has been thrown: %s ", e.what() );
+		getch();
 	}
 	
-	file.close();
-	return true;
+	return false;
 }
 
 bool World::Load( const std::string & fileName )
@@ -237,8 +254,25 @@ bool World::Load( const std::string & fileName )
 	this->map->Clear();
 	for( auto it = this->actors.begin(); it != this->actors.end(); ++it )
 		Free( it->second );
-	actors.clear();
+	this->queueActorsToRemove.clear();
+	this->actors.clear();
+	this->tickUpdateQueue.clear();
 	return this->AppendLoadWithOverlapp( fileName );
+}
+
+void World::QueueAppendLoadWithoutOverlapp( const std::string & fileName )
+{
+	this->mapsToLoad.insert( std::pair < std::string, int > ( fileName, 2 ) );
+}
+
+void World::QueueAppendLoadWithOverlapp( const std::string & fileName )
+{
+	this->mapsToLoad.insert( std::pair < std::string, int > ( fileName, 1 ) );
+}
+
+void World::QueueLoad( const std::string & fileName )
+{
+	this->mapsToLoad.insert( std::pair < std::string, int > ( fileName, 0 ) );
 }
 
 void World::Tick()
@@ -253,11 +287,11 @@ void World::Tick()
 			for( ; it != this->tickUpdateQueue.end() && it->first <= this->GetCurrentMoment(); ++it )
 			{
 				this->numberOfActorTicksPerWorldTick++;
-				unsigned nextTick = /*this->GetCurrentMoment()*/ it->first + it->second->Tick();
+				unsigned nextTick = it->first + it->second->Tick();
 				if( this->queueActorsToRemove.find( it->second->GetName() ) == this->queueActorsToRemove.end() )
 				{
-					if( nextTick < it->first/*this->GetCurrentMoment()*/+10 )
-						nextTick = it->first/*this->GetCurrentMoment()*/+10;
+					if( nextTick < it->first+3 )
+						nextTick = it->first+3;
 					toInsert.insert( std::pair<unsigned,Actor*>(nextTick,it->second) );
 				}
 			}
@@ -268,7 +302,7 @@ void World::Tick()
 		
 		{
 			auto it = this->queueActorsToRemove.begin();
-			for( int i = 0; it != this->queueActorsToRemove.end() && i < 10000; ++it )
+			for( int i = 0; it != this->queueActorsToRemove.end() && i < 100; ++it )
 			{
 				this->DestroyActor( *it );
 			}
@@ -331,6 +365,24 @@ void World::BeginLoop()
 			deltaTime = 20;
 		else if( deltaTime > 300 )
 			deltaTime = 300;
+		
+		for( auto it = this->mapsToLoad.begin(); it != this->mapsToLoad.end(); ++it  )
+		{
+			switch( it->second )
+			{
+			case 0:
+				this->Load( it->first );
+				break;
+			case 1:
+				this->AppendLoadWithOverlapp( it->first );
+				break;
+			case 2:
+				this->AppendLoadWithoutOverlapp( it->first );
+				break;
+			}
+		}
+		
+		this->mapsToLoad.clear();
 		
 		beg = clock();
 		

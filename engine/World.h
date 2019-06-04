@@ -38,6 +38,8 @@ protected:
 	bool drawMenu;
 	bool updateTick;
 	
+	std::multimap < std::string, int > mapsToLoad;		// arguments: 0-full Load with clear ; 1-append load with overlapp ; 2-append load without overlapp
+	
 	std::string centeredActorName;
 	
 	std::multimap < unsigned, Actor* > tickUpdateQueue;
@@ -48,6 +50,8 @@ protected:
 	long long numberOfActorTicksPerWorldTick;
 	
 public:
+	
+	const Actor * GetRegisteredActorByTypeName( const std::string & name ) const;
 	
 	long long GetActorTicksPerWorldTick() const{ return this->numberOfActorTicksPerWorldTick; }
 	
@@ -79,6 +83,10 @@ public:
 	bool AppendLoadWithoutOverlapp( const std::string & fileName );
 	bool AppendLoadWithOverlapp( const std::string & fileName );
 	bool Load( const std::string & fileName );
+	
+	void QueueAppendLoadWithoutOverlapp( const std::string & fileName );
+	void QueueAppendLoadWithOverlapp( const std::string & fileName );
+	void QueueLoad( const std::string & fileName );
 	
 	virtual void DrawMenu( Window * window ) = 0;
 	virtual void DrawGUI( Window * window ) = 0;

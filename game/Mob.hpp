@@ -46,13 +46,13 @@ public:
 		return ret;
 	}
 	
-	virtual void Save( std::ofstream & file ) const override
+	virtual void Save( std::ostream & file ) const override
 	{
 		Character::Save( file );
 		file << this->movementCooldown << " ";
 	}
 	
-	virtual void Load( std::ifstream & file ) override
+	virtual void Load( std::istream & file ) override
 	{
 		Character::Load( file );
 		file >> this->movementCooldown;

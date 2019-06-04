@@ -39,11 +39,84 @@ void World2::DrawDeveloperConsole( Window * window )
 		}
 		else if( in[0] == "save" && in.size() > 1 )
 		{
-			this->Save( in[1] );
+			if( in.size() > 1 )
+			{
+				if( this->Save( in[1] ) )
+				{
+					window->Print( "\n Saved correctly" );
+				}
+				else
+				{
+					window->Print( "\n Couldn't be saved correctly" );
+				}
+				
+				if( in.size() > 2 )
+				{
+					window->Print( "\n Too many arguments" );
+				}
+			}
+			else
+			{
+				window->Print( "\n Give file name to save as argument:\n     save <file_name>" );
+			}
 		}
-		else if( in[0] == "load" && in.size() > 1 )
+		else if( in[0] == "load" )
 		{
-			this->Load( in[1] );
+			if( in.size() > 1 )
+			{
+				if( this->Load( in[1] ) )
+				{
+					window->Print( "\n Loaded correctly" );
+				}
+				else
+				{
+					window->Print( "\n Couldn't be loaded correctly" );
+				}
+				
+				if( in.size() > 2 )
+				{
+					window->Print( "\n Too many arguments" );
+				}
+			}
+			else
+			{
+				window->Print( "\n Give file name to load as argument:\n     save <file_name>" );
+			}
+		}
+		else if( in[0] == "spawn" )
+		{
+			if( in.size() >= 7 )
+			{
+				std::string typeName = in[1];
+				const Actor * type = this->GetRegisteredActorByTypeName( typeName );
+				if( type == NULL )
+				{
+					window->Print( "\n No registered actor type: \"%s\"", typeName.c_str() );
+				}
+				else
+				{
+					std::string actorName = in[2];
+					int x, y;
+					int sx, sy;
+					x = atoi(in[3].c_str());
+					y = atoi(in[4].c_str());
+					sx = atoi(in[5].c_str());
+					sy = atoi(in[6].c_str());
+					if( this->actors.find( actorName ) == this->actors.end() )
+					{
+						this->AddActor( actorName, Vector(x,y), Vector(sx,sy), type->Make() );
+					}
+					else
+					{
+						window->Print( "\n Actor with name already exists: \"%s\"", actorName.c_str() );
+					}
+				}
+				
+				if( in.size() > 7 )
+				{
+					window->Print( "\n Too many arguments" );
+				}
+			}
 		}
 		window->Print( "\n" );
 	}

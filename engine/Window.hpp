@@ -193,6 +193,10 @@ public:
 		Vector beg, size, end;
 		Vector wsize;
 		this->GetConsoleSize( wsize );
+		if( wsize.x > 400 )
+			wsize.x = 400;
+		if( wsize.y > 400 )
+			wsize.y = 400;
 		
 		beg.x = int( minx * wsize.x );
 		beg.y = int( miny * wsize.y );

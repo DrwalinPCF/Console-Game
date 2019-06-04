@@ -64,6 +64,10 @@ public:
 		if( IsKeyDown( VK_RETURN ) )
 			this->Shoot();
 		
+		if( IsKeyDown( 'P' ) )
+			this->world->Save( "save.sav" );
+		if( IsKeyDown( 'L' ) )
+			this->world->QueueLoad( "save.sav" );
 		
 		if( IsKeyDown( 0x30 ) )
 			PrintMemoryAllocatedToFile( "file0.txt" );
@@ -86,16 +90,15 @@ public:
 		if( IsKeyDown( 0x39 ) )
 			PrintMemoryAllocatedToFile( "file9.txt" );
 		
-		
 		return ret;
 	}
 	
-	virtual void Save( std::ofstream & file ) const override
+	virtual void Save( std::ostream & file ) const override
 	{
 		Character::Save( file );
 	}
 	
-	virtual void Load( std::ifstream & file ) override
+	virtual void Load( std::istream & file ) override
 	{
 		Character::Load( file );
 	}

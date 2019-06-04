@@ -60,7 +60,7 @@ bool Actor::InBounds( const Vector & min, const Vector & max ) const
 	return Vector::BoundInBound( this->GetAABBmin(), this->GetAABBmax(), min, max );
 }
 
-void Actor::Save( std::ofstream & file ) const
+void Actor::Save( std::ostream & file ) const
 {
 	if( file.good() )
 	{
@@ -72,7 +72,7 @@ void Actor::Save( std::ofstream & file ) const
 	}
 }
 
-void Actor::Load( std::ifstream & file )
+void Actor::Load( std::istream & file )
 {
 	if( file.good() )
 	{

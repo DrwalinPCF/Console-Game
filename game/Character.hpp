@@ -116,7 +116,7 @@ public:
 		return 40;
 	}
 	
-	virtual void Save( std::ofstream & file ) const override
+	virtual void Save( std::ostream & file ) const override
 	{
 		Actor::Save( file );
 		file << this->hp << " ";
@@ -126,7 +126,7 @@ public:
 		file << this->direction.y << " ";
 	}
 	
-	virtual void Load( std::ifstream & file ) override
+	virtual void Load( std::istream & file ) override
 	{
 		Actor::Load( file );
 		file >> this->hp;

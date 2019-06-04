@@ -40,12 +40,12 @@ public:
 		return 10000;
 	}
 	
-	virtual void Save( std::ofstream & file ) const override
+	virtual void Save( std::ostream & file ) const override
 	{
 		Actor::Save( file );
 	}
 	
-	virtual void Load( std::ifstream & file ) override
+	virtual void Load( std::istream & file ) override
 	{
 		Actor::Load( file );
 	}

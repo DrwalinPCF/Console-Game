@@ -61,6 +61,30 @@ inline void PrintMemoryAllocatedToFile( std::string fileName )
 	file.close();
 }
 
+template < class T >
+inline std::string MethodName( const std::string& prettyFunction )
+{
+	std::string ret = prettyFunction;
+	size_t index = 0;
+	
+	while( true )
+	{
+		index = ret.find( "::__cxx11" );
+		if( index == std::string::npos )
+			break;
+		ret.replace( index, 9, "" );
+	}
+	
+	index = ret.find( " [" );
+	if( index != std::string::npos )
+		ret.resize( index );
+	
+	return ret;
+}
+#define __METHOD_NAME__ (MethodName<int>(__PRETTY_FUNCTION__))
+
+std::ofstream DBGFL( "Game.dbg.log" );
+#define DEBUG(MSG) {DBGFL << "\n " << __FILE__ << ":" << __LINE__ << " -> " << __METHOD_NAME__ << " : " << MSG; DBGFL.flush(); Sleep(10);}
 
 #include <vector>
 #include <string>

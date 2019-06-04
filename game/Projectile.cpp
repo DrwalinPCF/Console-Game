@@ -75,7 +75,7 @@ unsigned Projectile::Tick()
 	return 1000/this->velocity;
 }
 
-void Projectile::Save( std::ofstream & file ) const
+void Projectile::Save( std::ostream & file ) const
 {
 	Actor::Save( file );
 	
@@ -89,7 +89,7 @@ void Projectile::Save( std::ofstream & file ) const
 	file << this->changedPositionBy.y << " ";
 }
 
-void Projectile::Load( std::ifstream & file )
+void Projectile::Load( std::istream & file )
 {
 	Actor::Load( file );
 	
@@ -97,6 +97,7 @@ void Projectile::Load( std::ifstream & file )
 	file >> this->direction.y;
 	
 	file >> this->velocity;
+	file >> this->timeToDespawn;
 	
 	file >> this->changedPositionBy.x;
 	file >> this->changedPositionBy.y;

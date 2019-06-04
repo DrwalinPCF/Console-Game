@@ -38,8 +38,8 @@ public:
 	
 	bool InBounds( const Vector & min, const Vector & max ) const;
 	
-	virtual void Save( std::ofstream & file ) const;
-	virtual void Load( std::ifstream & file );
+	virtual void Save( std::ostream & file ) const;
+	virtual void Load( std::istream & file );
 	
 	virtual unsigned Tick(){return 50;}// = 0;
 	
