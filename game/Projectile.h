@@ -31,10 +31,10 @@ public:
 	virtual void Init( class World * world ) override;
 	virtual void Deinit() override;
 	
-	virtual std::string GetTypeName() override;
-	virtual Actor * Make() override;
-	Projectile();
+	virtual std::string GetTypeName() const override;
+	virtual Actor * Make() const override;
 	virtual ~Projectile() override;
+	Projectile();
 };
 
 #endif

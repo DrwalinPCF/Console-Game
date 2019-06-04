@@ -36,56 +36,56 @@ public:
 	{
 		unsigned ret = Character::Tick();
 		
-		if( GetAsyncKeyState( VK_ESCAPE ) & 0x8000 )
+		if( IsKeyDown( VK_ESCAPE ) )
 			this->world->Exit();
-		if( GetAsyncKeyState( VK_OEM_3 ) & 0x8000 )
+		if( IsKeyDown( VK_OEM_3 ) )
 			dynamic_cast<World2*>(this->world)->BeginDrawingMenu( World2::MenuTypes::DEV_CONSOLE );
 		
-		if( GetAsyncKeyState( 'A' ) & 0x8000 )
+		if( IsKeyDown( 'A' ) )
 			this->Move( Vector( -1, 0 ) );
-		if( GetAsyncKeyState( 'D' ) & 0x8000 )
+		if( IsKeyDown( 'D' ) )
 			this->Move( Vector( 1, 0 ) );
-		if( GetAsyncKeyState( 'S' ) & 0x8000 )
+		if( IsKeyDown( 'S' ) )
 			this->Move( Vector( 0, 1 ) );
-		if( GetAsyncKeyState( 'W' ) & 0x8000 )
+		if( IsKeyDown( 'W' ) )
 			this->Move( Vector( 0, -1 ) );
 		
-		if( GetAsyncKeyState( VK_LEFT ) & 0x8000 )
+		if( IsKeyDown( VK_LEFT ) )
 			this->direction = Vector( -1, 0 );
-		if( GetAsyncKeyState( VK_RIGHT ) & 0x8000 )
+		if( IsKeyDown( VK_RIGHT ) )
 			this->direction = Vector( 1, 0 );
-		if( GetAsyncKeyState( VK_UP ) & 0x8000 )
+		if( IsKeyDown( VK_UP ) )
 			this->direction = Vector( 0, -1 );
-		if( GetAsyncKeyState( VK_DOWN ) & 0x8000 )
+		if( IsKeyDown( VK_DOWN ) )
 			this->direction = Vector( 0, 1 );
 		
-		if( GetAsyncKeyState( VK_SPACE ) & 0x8000 )
+		if( IsKeyDown( VK_SPACE ) )
 			this->Attack();
-		if( GetAsyncKeyState( VK_RETURN ) & 0x8000 )
+		if( IsKeyDown( VK_RETURN ) )
 			this->Shoot();
 		
-		/*
-		if( GetAsyncKeyState( 0x30 ) & 0x8000 )
+		
+		if( IsKeyDown( 0x30 ) )
 			PrintMemoryAllocatedToFile( "file0.txt" );
-		if( GetAsyncKeyState( 0x31 ) & 0x8000 )
+		if( IsKeyDown( 0x31 ) )
 			PrintMemoryAllocatedToFile( "file1.txt" );
-		if( GetAsyncKeyState( 0x32 ) & 0x8000 )
+		if( IsKeyDown( 0x32 ) )
 			PrintMemoryAllocatedToFile( "file2.txt" );
-		if( GetAsyncKeyState( 0x33 ) & 0x8000 )
+		if( IsKeyDown( 0x33 ) )
 			PrintMemoryAllocatedToFile( "file3.txt" );
-		if( GetAsyncKeyState( 0x34 ) & 0x8000 )
+		if( IsKeyDown( 0x34 ) )
 			PrintMemoryAllocatedToFile( "file4.txt" );
-		if( GetAsyncKeyState( 0x35 ) & 0x8000 )
+		if( IsKeyDown( 0x35 ) )
 			PrintMemoryAllocatedToFile( "file5.txt" );
-		if( GetAsyncKeyState( 0x36 ) & 0x8000 )
+		if( IsKeyDown( 0x36 ) )
 			PrintMemoryAllocatedToFile( "file6.txt" );
-		if( GetAsyncKeyState( 0x37 ) & 0x8000 )
+		if( IsKeyDown( 0x37 ) )
 			PrintMemoryAllocatedToFile( "file7.txt" );
-		if( GetAsyncKeyState( 0x38 ) & 0x8000 )
+		if( IsKeyDown( 0x38 ) )
 			PrintMemoryAllocatedToFile( "file8.txt" );
-		if( GetAsyncKeyState( 0x39 ) & 0x8000 )
+		if( IsKeyDown( 0x39 ) )
 			PrintMemoryAllocatedToFile( "file9.txt" );
-		*/
+		
 		
 		return ret;
 	}
@@ -121,12 +121,12 @@ public:
 	}
 	
 	
-	virtual std::string GetTypeName() override
+	virtual std::string GetTypeName() const override
 	{
 		return "Player";
 	}
 	
-	virtual Actor * Make() override
+	virtual Actor * Make() const override
 	{
 		return Allocate<Player>();
 	}

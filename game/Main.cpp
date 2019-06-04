@@ -2,6 +2,8 @@
 #include <cstdlib>
 #include <ctime>
 
+#include <exception>
+
 #include "../engine/Utility.hpp"
 
 #include "../engine/Map.cpp"
@@ -16,7 +18,7 @@
 
 #include "Projectile.cpp"
 
-#include <exception>
+#include "RegisterTypes.cpp"
 
 int main()
 {
@@ -26,10 +28,7 @@ int main()
 	{
 		World * world = Allocate<World2>();
 		
-		world->RegisterType( Allocate<Block>() );
-		world->RegisterType( Allocate<Player>() );
-		world->RegisterType( Allocate<Mob>() );
-		world->RegisterType( Allocate<Projectile>() );
+		RegisterTypes( world );
 		
 		world->AddActor( "Player", Vector(0,0), Vector(1,1), Allocate<Player>() );
 		world->AddActor( "Block_01", Vector(3,0), Vector(1,1), Allocate<Block>() );

@@ -35,7 +35,7 @@ public:
 		size.y = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
 	}
 	
-	void PutChar( Vector pos, char sign, WORD color = FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_GREEN )
+	void PutChar( Vector pos, char sign, WORD color = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE )
 	{
 		if( pos.x >= 0 && pos.x < this->w && pos.y >= 0 && pos.y < this->h && this->consoleBuffer )
 		{
@@ -48,9 +48,6 @@ public:
 	{
 		if( this->consoleBuffer != nullptr )
 		{
-			for( int i = 0; i < 1000; ++i )
-				printf( "fhuesihfushierhuioghuigrhshighseigrsgid" );
-			
 			memmove( this->consoleBuffer, this->consoleBuffer + this->w, ( this->w * ( this->h - 1 ) ) * sizeof(CHAR_INFO) );
 			int i = ( this->w * this->h ) - this->w;
 			int max = this->w * this->h;

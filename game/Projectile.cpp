@@ -127,12 +127,12 @@ void Projectile::Deinit()
 }
 
 
-std::string Projectile::GetTypeName()
+std::string Projectile::GetTypeName() const
 {
 	return "Projectile";
 }
 
-Actor * Projectile::Make()
+Actor * Projectile::Make() const
 {
 	return Allocate<Projectile>();
 }

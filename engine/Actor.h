@@ -50,8 +50,8 @@ public:
 	virtual void Deinit();
 	
 	
-	virtual std::string GetTypeName(){return "Actor";}// = 0;		// return name of the class
-	virtual Actor * Make(){return NULL;}// = 0;					// return new T(); for every type
+	virtual std::string GetTypeName() const = 0;		// return name of the class
+	virtual Actor * Make() const = 0;					// return Allocate T(); for every type
 	virtual ~Actor();
 	Actor();
 };

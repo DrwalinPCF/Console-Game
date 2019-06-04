@@ -141,5 +141,12 @@ inline std::vector < std::string > SubdivideString( const std::string & str )
 	return ret;
 }
 
+#include <windows.h>
+
+bool IsKeyDown( int keyId )
+{
+	return GetAsyncKeyState( keyId ) & 0x8000;
+}
+
 #endif
 

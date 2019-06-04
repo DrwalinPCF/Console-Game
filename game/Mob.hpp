@@ -79,12 +79,12 @@ public:
 	}
 	
 	
-	virtual std::string GetTypeName() override
+	virtual std::string GetTypeName() const override
 	{
 		return "Mob";
 	}
 	
-	virtual Actor * Make() override
+	virtual Actor * Make() const override
 	{
 		return Allocate<Mob>();
 	}
