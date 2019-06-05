@@ -69,27 +69,6 @@ public:
 		if( IsKeyDown( 'L' ) )
 			this->world->QueueLoad( "save.sav" );
 		
-		if( IsKeyDown( 0x30 ) )
-			PrintMemoryAllocatedToFile( "file0.txt" );
-		if( IsKeyDown( 0x31 ) )
-			PrintMemoryAllocatedToFile( "file1.txt" );
-		if( IsKeyDown( 0x32 ) )
-			PrintMemoryAllocatedToFile( "file2.txt" );
-		if( IsKeyDown( 0x33 ) )
-			PrintMemoryAllocatedToFile( "file3.txt" );
-		if( IsKeyDown( 0x34 ) )
-			PrintMemoryAllocatedToFile( "file4.txt" );
-		if( IsKeyDown( 0x35 ) )
-			PrintMemoryAllocatedToFile( "file5.txt" );
-		if( IsKeyDown( 0x36 ) )
-			PrintMemoryAllocatedToFile( "file6.txt" );
-		if( IsKeyDown( 0x37 ) )
-			PrintMemoryAllocatedToFile( "file7.txt" );
-		if( IsKeyDown( 0x38 ) )
-			PrintMemoryAllocatedToFile( "file8.txt" );
-		if( IsKeyDown( 0x39 ) )
-			PrintMemoryAllocatedToFile( "file9.txt" );
-		
 		return ret;
 	}
 	

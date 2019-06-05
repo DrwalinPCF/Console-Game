@@ -113,7 +113,7 @@ public:
 			}
 		}
 		
-		return 40;
+		return 70;
 	}
 	
 	virtual void Save( std::ostream & file ) const override

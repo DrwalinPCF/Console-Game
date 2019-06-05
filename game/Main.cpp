@@ -20,9 +20,11 @@
 
 #include "RegisterTypes.cpp"
 
+#include "WorldGenerator.cpp"
+
 int main()
 {
-	srand( time( nullptr ) );
+	srand( time( NULL ) );
 	
 	try
 	{
@@ -30,13 +32,29 @@ int main()
 		
 		RegisterTypes( world );
 		
+		
+		
+		WorldGenerator wg( world, Vector(-200,-200), Vector(200,200) );
+		wg.GenerateRandom( 0.7f );
+		
+		int count;
+		printf( "\n Number of game of life iterations: " );
+		scanf( "%i", &count );
+		
+		for( int i = 0; i < count; ++i )
+			wg.GameOfLifeStep( 5, 2, 5, 1 );
+		
+		wg.GenerateActors();
+		
+		
+		
 		world->AddActor( "Player", Vector(0,0), Vector(1,1), Allocate<Player>() );
-		world->AddActor( "Block_01", Vector(3,0), Vector(1,1), Allocate<Block>() );
-		world->AddActor( "Block_02", Vector(3,4), Vector(4,2), Allocate<Block>() );
-		world->AddActor( "Block_03", Vector(-3,0), Vector(3,1), Allocate<Block>() );
-		world->AddActor( "Block_04", Vector(-3,7), Vector(1,3), Allocate<Block>() );
-		world->AddActor( "Block_05", Vector(-3,-5), Vector(1,2), Allocate<Block>() );
-		world->AddActor( "Block_06", Vector(3,-3), Vector(3,2), Allocate<Block>() );
+		//world->AddActor( "Block_01", Vector(3,0), Vector(1,1), Allocate<Block>() );
+		//world->AddActor( "Block_02", Vector(3,4), Vector(4,2), Allocate<Block>() );
+		//world->AddActor( "Block_03", Vector(-3,0), Vector(3,1), Allocate<Block>() );
+		//world->AddActor( "Block_04", Vector(-3,7), Vector(1,3), Allocate<Block>() );
+		//world->AddActor( "Block_05", Vector(-3,-5), Vector(1,2), Allocate<Block>() );
+		//world->AddActor( "Block_06", Vector(3,-3), Vector(3,2), Allocate<Block>() );
 		world->AddActor( "Mob_01", Vector(10,10), Vector(3,3), Allocate<Mob>() );
 		
 		world->CenterAtActor( "Player" );
