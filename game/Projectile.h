@@ -20,6 +20,8 @@ public:
 	
 	virtual bool IsWalkable() const override;
 	virtual bool NeedTick() const override;
+	virtual unsigned char GetOpaqueness() const override;
+	virtual bool IsStaticallyDrawn() const override;
 	
 	virtual void Draw( unsigned currentSecond, class Drawer * drawer ) override;
 	virtual unsigned Tick() override;

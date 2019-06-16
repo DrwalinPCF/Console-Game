@@ -23,6 +23,16 @@ public:
 		return false;
 	}
 	
+	virtual unsigned char GetOpaqueness() const override
+	{
+		return 255;
+	}
+	
+	virtual bool IsStaticallyDrawn() const override
+	{
+		return true;
+	}
+	
 	virtual void Draw( unsigned currentSecond, class Drawer * drawer ) override
 	{
 		long long x, y;

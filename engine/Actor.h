@@ -19,10 +19,13 @@ protected:
 	
 public:
 	
+	
 	std::string GetName() const;
 	
-	virtual bool IsWalkable() const{return false;}//= 0;
-	virtual bool NeedTick() const{return true;}//= 0;
+	virtual bool IsWalkable() const = 0;
+	virtual bool NeedTick() const = 0;
+	virtual unsigned char GetOpaqueness() const = 0;		// 0 - do not block view at all ; 255 - block all the view
+	virtual bool IsStaticallyDrawn() const = 0;
 	
 	
 	bool SetPos( const Vector & loc );

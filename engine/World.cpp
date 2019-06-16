@@ -320,7 +320,8 @@ void World::Draw( unsigned deltaTime )
 			auto it = this->actors.find( this->centeredActorName );
 			if( it != this->actors.end() )
 			{
-				this->screenOffset = it->second->GetPos() + ( it->second->GetSize() / 2 ) - ( /*Vector(this->mapScr->w,this->mapScr->h)*/  this->mapDrawer->GetWinSize() / 2 );
+				this->screenOffset = it->second->GetPos() + ( it->second->GetSize() / 2 ) - ( this->mapDrawer->GetWinSize() / 2 );
+				this->mapDrawer->SetPlayerPos( it->second->GetPos() - this->screenOffset );
 			}
 		}
 		
@@ -328,13 +329,14 @@ void World::Draw( unsigned deltaTime )
 		std::set <Actor*> ignores;
 		this->map->GetActors( Vector(0,0) + this->screenOffset, Vector(0,0) + this->screenOffset + this->mapDrawer->GetWinSize(), ignores, toDraw );
 		
-		this->mapScr->Clear();
+		this->mapDrawer->Clear();
 		for( auto it = toDraw.begin(); it != toDraw.end(); ++it )
 		{
+			this->mapDrawer->SetCurrentFlags( (*it)->IsStaticallyDrawn(), (*it)->GetOpaqueness() );
 			this->mapDrawer->SetCurrentPos( (*it)->GetPos() - this->screenOffset );
 			(*it)->Draw( deltaTime, this->mapDrawer );
 		}
-		this->mapScr->Update();
+		this->mapDrawer->Redraw();
 		
 		this->guiScr->Clear();
 		this->DrawGUI( this->guiScr );
@@ -446,6 +448,7 @@ World::~World()
 	Free( this->screen );
 	Free( this->mapScr );
 	Free( this->guiScr );
+	Free( this->map );
 }
 
 #endif

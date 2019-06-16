@@ -21,6 +21,26 @@ protected:
 	
 public:
 	
+	virtual bool IsWalkable() const override
+	{
+		return false;
+	}
+	
+	virtual bool NeedTick() const override
+	{
+		return true;
+	}
+	
+	virtual unsigned char GetOpaqueness() const override
+	{
+		return 8;
+	}
+	
+	virtual bool IsStaticallyDrawn() const override
+	{
+		return false;
+	}
+	
 	void Shoot()
 	{
 		if( this->attackCooldown <= this->world->GetCurrentMoment() )
@@ -79,16 +99,6 @@ public:
 	int GetMaxHP() const
 	{
 		return this->maxHp;
-	}
-	
-	virtual bool IsWalkable() const override
-	{
-		return false;
-	}
-	
-	virtual bool NeedTick() const override
-	{
-		return true;
 	}
 	
 	virtual void Draw( unsigned currentSecond, class Drawer * drawer ) override

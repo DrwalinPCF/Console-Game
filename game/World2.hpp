@@ -2,11 +2,6 @@
 #ifndef WORLD_2_HPP
 #define WORLD_2_HPP
 
-#include "Player.hpp"
-
-#include "../engine/World.h"
-#include "../engine/Drawer.hpp"
-
 #include <cstdlib>
 #include <ctime>
 
@@ -14,6 +9,12 @@
 #include <string>
 
 #include <conio.h>
+
+#include "../engine/World.h"
+#include "../engine/Drawer.hpp"
+
+#include "Player.hpp"
+#include "DrawerPreprocessor.hpp"
 
 class StringGetter
 {
@@ -54,6 +55,9 @@ public:
 	
 	World2()
 	{
+		Free( this->mapDrawer );
+		this->mapDrawer = Allocate<DrawerPreprocessor>();
+		this->mapDrawer->SetWindow( this->mapScr );
 		this->menuType = MenuTypes::NONE;
 	}
 	

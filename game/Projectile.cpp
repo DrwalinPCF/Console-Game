@@ -22,6 +22,16 @@ bool Projectile::NeedTick() const
 	return true;
 }
 
+unsigned char Projectile::GetOpaqueness() const
+{
+	return 0;
+}
+
+bool Projectile::IsStaticallyDrawn() const
+{
+	return false;
+}
+
 void Projectile::Draw( unsigned currentSecond, class Drawer * drawer )
 {
 	Vector delta( 0, 0 );

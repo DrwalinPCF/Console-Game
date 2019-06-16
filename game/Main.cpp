@@ -34,12 +34,13 @@ int main()
 		
 		
 		
-		WorldGenerator wg( world, Vector(-200,-200), Vector(200,200) );
-		wg.GenerateRandom( 0.7f );
+		WorldGenerator wg( world, Vector(-60,-60), Vector(60,60) );
+		wg.GenerateRandom( 0.3f );
 		
 		int count;
-		printf( "\n Number of game of life iterations: " );
-		scanf( "%i", &count );
+		//printf( "\n Number of game of life iterations: " );
+		//scanf( "%i", &count );
+		count = 5;
 		
 		for( int i = 0; i < count; ++i )
 			wg.GameOfLifeStep( 5, 2, 5, 1 );
@@ -64,6 +65,8 @@ int main()
 		world->Destroy();
 		
 		Free( world );
+		
+		PrintMemoryAllocatedToFile( "memory_at_main_exit.log" );
 		
 		delete DEBUG_MEMORY_USED;
 	}

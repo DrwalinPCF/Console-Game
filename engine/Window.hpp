@@ -44,6 +44,15 @@ public:
 		}
 	}
 	
+	void GetChar( Vector pos, char & sign, WORD & color )
+	{
+		if( pos.x >= 0 && pos.x < this->w && pos.y >= 0 && pos.y < this->h && this->consoleBuffer )
+		{
+			sign = this->consoleBuffer[ ( pos.y * this->w ) + pos.x ].Char.AsciiChar;
+			color = this->consoleBuffer[ ( pos.y * this->w ) + pos.x ].Attributes;
+		}
+	}
+	
 	void RollUp()
 	{
 		if( this->consoleBuffer != nullptr )
@@ -178,7 +187,6 @@ public:
 	{
 		if( this->consoleBuffer )
 		{
-			//delete[] this->consoleBuffer;
 			Free( this->consoleBuffer );
 			this->consoleBuffer = nullptr;
 		}
@@ -213,7 +221,7 @@ public:
 		this->x = beg.x;
 		this->y = beg.y;
 		
-		this->consoleBuffer = Allocate<CHAR_INFO>(this->w * this->h);//new CHAR_INFO[ this->w * this->h ];
+		this->consoleBuffer = Allocate<CHAR_INFO>(this->w * this->h);
 		this->hOutput = GetStdHandle( STD_OUTPUT_HANDLE );
 		
 		this->Clear();
