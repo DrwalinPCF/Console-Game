@@ -32,15 +32,13 @@ int main()
 		
 		RegisterTypes( world );
 		
-		
-		
-		WorldGenerator wg( world, Vector(-60,-60), Vector(60,60) );
-		wg.GenerateRandom( 0.3f );
+		WorldGenerator wg( world, Vector(-40,-40), Vector(40,40) );
+		wg.GenerateRandom( 0.25f );
 		
 		int count;
 		//printf( "\n Number of game of life iterations: " );
 		//scanf( "%i", &count );
-		count = 5;
+		count = 3;
 		
 		for( int i = 0; i < count; ++i )
 			wg.GameOfLifeStep( 5, 2, 5, 1 );

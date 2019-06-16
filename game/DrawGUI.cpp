@@ -29,8 +29,14 @@ void World2::DrawGUI( Window * window )
 	window->Print( Vector( 0, 4 ), " " );
 	
 	static int ticks = 0;
+	static int begin = clock();
+	if( ticks % 30 == 0 )
+	{
+		begin = clock()+1;
+		ticks = 0;
+	}
 	++ticks;
-	window->Print( "\n fps = %i / %2.2f = %2.2f", ticks, float(clock())*0.001f, float(ticks) / (float(clock())*0.001f) );
+	window->Print( "\n fps = %i / %2.2f = %2.2f", ticks, float(clock()-begin)*0.001f, float(ticks) / (float(clock()-begin)*0.001f) );
 	
 	window->Print( "\n Number of Actors: %lli ", this->GetNumberOfActors() );
 	window->Print( "\n Actor::Tick per world tick: %lli ", this->GetActorTicksPerWorldTick() );
