@@ -22,6 +22,8 @@
 
 #include "WorldGenerator.cpp"
 
+#include "Perlin.cpp"
+
 int main()
 {
 	srand( time( NULL ) );
@@ -32,7 +34,7 @@ int main()
 		
 		RegisterTypes( world );
 		
-		WorldGenerator wg( world, Vector(-40,-40), Vector(40,40) );
+		WorldGenerator wg( world, Vector(-100,-100), Vector(100,100) );
 		wg.GenerateRandom( 0.25f );
 		
 		int count;
@@ -44,7 +46,6 @@ int main()
 			wg.GameOfLifeStep( 5, 2, 5, 1 );
 		
 		wg.GenerateActors();
-		
 		
 		
 		world->AddActor( "Player", Vector(0,0), Vector(1,1), Allocate<Player>() );

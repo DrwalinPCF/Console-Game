@@ -12,6 +12,8 @@
 #include <ctime>
 #include <cstdlib>
 
+#include "Perlin.hpp"
+
 class WorldGenerator
 {
 private:

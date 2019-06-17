@@ -8,6 +8,8 @@
 
 void WorldGenerator::GameOfLifeStep( const int minToGetAlive, const int minBorderLife, const int maxBorderLife, int radius )
 {
+	return;
+	
 	auto & mapA = this->isCurrentlyA ? this->mapA : this->mapB;
 	auto & mapB = this->isCurrentlyA ? this->mapB : this->mapA;
 	
@@ -42,7 +44,7 @@ void WorldGenerator::GenerateActors()
 {
 	int i, j, prev;
 	
-	auto & map = this->isCurrentlyA ? this->mapB : this->mapA;
+	auto & map = this->isCurrentlyA ? this->mapA : this->mapB;
 	
 	for( i = 0; i < this->size.x; ++i )
 	{
@@ -73,7 +75,13 @@ void WorldGenerator::GenerateRandom( float filling )
 		auto & A = map[i];
 		for( j = 0; j < this->size.y; ++j )
 		{
-			A[j] = (bool)( rand() < ((int)(filling*(float)RAND_MAX)) );
+			float value = Perlin::Noise( float(i)/10.0f, float(j)/10.0f, 0.0f );
+			if( value > 0.05f && value < 0.9f )
+				A[j] = true;
+			else
+				A[j] = false;
+			
+			//A[j] = (bool)( rand() < ((int)(filling*(float)RAND_MAX)) );
 		}
 	}
 }

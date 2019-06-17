@@ -14,7 +14,7 @@ protected:
 	
 public:
 	
-	void ScanOneLine( const Vector & start, const Vector & end )
+	void ScanOneLine( const Vector & start, const Vector & end, loctype distance )
 	{
 		loctype multiplier = 24;
 		Vector dir = (end-start);
@@ -22,7 +22,7 @@ public:
 		dir = ( dir * multiplier * multiplier ) / l;
 		
 		Vector p, prev = start;
-		for( int i = 1;; ++i )
+		for( int i = 1; i < distance*multiplier; ++i )
 		{
 			p = start + ((dir * i)/(multiplier*multiplier));
 			if( p != prev )
@@ -33,10 +33,30 @@ public:
 				DrawerPointData & previousData = this->data[prev.x][prev.y];
 				DrawerPointData & currentData = this->data[p.x][p.y];
 				
+				unsigned char t = currentData.viewDistance;
+				
 				if( previousData.viewDistance <= currentData.opaqueness )
-					return;
+				{
+					if( t != 0 )
+						currentData.viewDistance = t;
+					else
+						return;
+				}
 				
 				currentData.viewDistance = previousData.viewDistance - currentData.opaqueness;
+				
+				if( currentData.viewDistance <= 5 )
+				{
+					if( t != 0 )
+						currentData.viewDistance = t;
+					else
+						return;
+				}
+				
+				currentData.viewDistance -= 5;
+				
+				if( currentData.viewDistance < t )
+					currentData.viewDistance = t;
 				
 				prev = p;
 			}
@@ -52,13 +72,13 @@ public:
 		
 		Vector end(0,0);
 		for( ; end.x+1 < this->w; ++end.x )
-			this->ScanOneLine( this->playerPos, end );
+			this->ScanOneLine( this->playerPos, end, 25 );
 		for( ; end.y+1 < this->h; ++end.y )
-			this->ScanOneLine( this->playerPos, end );
+			this->ScanOneLine( this->playerPos, end, 25 );
 		for( ; end.x > 0; --end.x )
-			this->ScanOneLine( this->playerPos, end );
+			this->ScanOneLine( this->playerPos, end, 25 );
 		for( ; end.y > 0; --end.y )
-			this->ScanOneLine( this->playerPos, end );
+			this->ScanOneLine( this->playerPos, end, 25 );
 		
 		char sign;
 		WORD color;
@@ -68,6 +88,7 @@ public:
 			for( j = 0; j < this->h; ++j )
 			{
 				int sum = (int)this->data[i][j].viewDistance;
+				
 				if( i > 0 )
 					sum += (int)this->data[i-1][j].viewDistance;
 				if( j > 0 )
@@ -76,6 +97,7 @@ public:
 					sum += (int)this->data[i+1][j].viewDistance;
 				if( j+1 < this->h )
 					sum += (int)this->data[i][j+1].viewDistance;
+				
 				
 				if( sum == 0 )
 				{

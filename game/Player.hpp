@@ -41,14 +41,28 @@ public:
 		if( IsKeyDown( VK_OEM_3 ) )
 			dynamic_cast<World2*>(this->world)->BeginDrawingMenu( World2::MenuTypes::DEV_CONSOLE );
 		
+		Vector move(0,0);
+		
 		if( IsKeyDown( 'A' ) )
-			this->Move( Vector( -1, 0 ) );
+			move += Vector( -1, 0 );
 		if( IsKeyDown( 'D' ) )
-			this->Move( Vector( 1, 0 ) );
+			move += Vector( 1, 0 );
 		if( IsKeyDown( 'S' ) )
-			this->Move( Vector( 0, 1 ) );
+			move += Vector( 0, 1 );
 		if( IsKeyDown( 'W' ) )
-			this->Move( Vector( 0, -1 ) );
+			move += Vector( 0, -1 );
+		
+		if( this->Move( move ) == false )
+		{
+			if( IsKeyDown( 'A' ) )
+				this->Move( Vector( -1, 0 ) );
+			if( IsKeyDown( 'D' ) )
+				this->Move( Vector( 1, 0 ) );
+			if( IsKeyDown( 'S' ) )
+				this->Move( Vector( 0, 1 ) );
+			if( IsKeyDown( 'W' ) )
+				this->Move( Vector( 0, -1 ) );
+		}
 		
 		if( IsKeyDown( VK_LEFT ) )
 			this->direction = Vector( -1, 0 );
