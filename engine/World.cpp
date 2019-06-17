@@ -12,6 +12,8 @@
 
 #include "Utility.hpp"
 
+#include <conio.h>
+
 const Actor * World::GetRegisteredActorByTypeName( const std::string & name ) const
 {
 	auto it = this->registeredActors.find( name );

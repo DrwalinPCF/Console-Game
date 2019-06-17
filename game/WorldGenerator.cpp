@@ -4,7 +4,7 @@
 
 #include "WorldGenerator.h"
 
-#include "Block.hpp"
+#include "Block.h"
 
 void WorldGenerator::GameOfLifeStep( const int minToGetAlive, const int minBorderLife, const int maxBorderLife, int radius )
 {

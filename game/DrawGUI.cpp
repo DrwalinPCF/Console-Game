@@ -2,7 +2,9 @@
 #ifndef DRAW_GUI_CPP
 #define DRAW_GUI_CPP
 
-#include "World2.hpp"
+#include "World2.h"
+
+#include "Character.h"
 
 void World2::DrawGUI( Window * window )
 {

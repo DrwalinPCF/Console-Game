@@ -4,6 +4,17 @@
 
 #include <ctime>
 #include <string>
+#include <fstream>
+#include <map>
+#include <typeinfo>
+#include <vector>
+
+struct MEMORYSTRUCT
+{
+	unsigned long long elements;
+	unsigned long long sizeofelement;
+	std::string typeString;
+};
 
 inline std::string GetDateString()
 {
@@ -18,18 +29,9 @@ inline std::string GetDateString()
 	return std::string( buffer );
 }
 
-#include <fstream>
-#include <map>
 
-#include <typeinfo>
 
-struct MEMORYSTRUCT
-{
-	unsigned long long elements;
-	unsigned long long sizeofelement;
-	std::string typeString;
-};
-std::map < void*, MEMORYSTRUCT > * DEBUG_MEMORY_USED = new std::map < void*, MEMORYSTRUCT >();
+extern "C" std::map < void*, MEMORYSTRUCT > * DEBUG_MEMORY_USED;
 
 template < typename T >
 inline T * Allocate( unsigned long long elements = 1)
@@ -61,6 +63,8 @@ inline void PrintMemoryAllocatedToFile( std::string fileName )
 	file.close();
 }
 
+
+
 template < class T >
 inline std::string MethodName( const std::string& prettyFunction )
 {
@@ -82,12 +86,10 @@ inline std::string MethodName( const std::string& prettyFunction )
 	return ret;
 }
 #define __METHOD_NAME__ (MethodName<int>(__PRETTY_FUNCTION__))
-
-std::ofstream DBGFL( "Game.dbg.log" );
+extern "C" std::ofstream DBGFL;
 #define DEBUG(MSG) {DBGFL << "\n " << __FILE__ << ":" << __LINE__ << " -> " << __METHOD_NAME__ << " : " << MSG; DBGFL.flush(); Sleep(10);}
 
-#include <vector>
-#include <string>
+
 
 inline std::vector < std::string > SubdivideString( const std::string & str )
 {
@@ -165,12 +167,7 @@ inline std::vector < std::string > SubdivideString( const std::string & str )
 	return ret;
 }
 
-#include <windows.h>
-
-bool IsKeyDown( int keyId )
-{
-	return GetAsyncKeyState( keyId ) & 0x8000;
-}
+bool IsKeyDown( int keyId );
 
 #endif
 

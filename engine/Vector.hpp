@@ -200,26 +200,11 @@ public:
 	}
 	
 	
-	Vector( const Vector & other )
-	{
-		x = other.x;
-		y = other.y;
-	}
-	Vector( loctype a, loctype b )
-	{
-		x = a;
-		y = b;
-	}
-	Vector( loctype a )
-	{
-		x = a;
-		y = a;
-	}
-	Vector()
-	{
-		x = 0;
-		y = 0;
-	}
+	Vector( const Vector & other );
+	Vector( loctype a, loctype b );
+	Vector( loctype a );
+	Vector();
+	~Vector();
 };
 
 #endif

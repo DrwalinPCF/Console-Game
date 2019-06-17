@@ -2,8 +2,10 @@
 #ifndef DRAWER_HPP
 #define DRAWER_HPP
 
+#include "Utility.hpp"
+
 #include "Vector.hpp"
-#include "Window.hpp"
+#include "Window.h"
 
 #include <vector>
 
@@ -42,10 +44,12 @@ protected:
 	
 public:
 	
-	void SetPlayerPos( Vector playerPos )
+	inline void SetPlayerPos( Vector playerPos )
 	{
 		this->playerPos = playerPos;
 	}
+	
+	virtual void Preprocess();
 	
 	inline void UpdateSize()
 	{
@@ -76,10 +80,6 @@ public:
 		this->currentDrawingPointOpqueness = 0;
 		this->currentDrawingPointOpqueness |= staticDraw ? STATIC_DRAW : 0;
 		this->opaqueness = opaqueness;
-	}
-	
-	virtual void Preprocess()
-	{
 	}
 	
 	inline void Redraw()
@@ -132,39 +132,12 @@ public:
 		return Vector( this->win->w, this->win->h );
 	}
 	
-	void SetCurrentPos( const Vector & pos )
-	{
-		this->currentLocalPos = pos;
-	}
+	void SetCurrentPos( const Vector & pos );
+	Vector GetCurrentPos() const;
+	void SetWindow( Window * win_ );
 	
-	Vector GetCurrentPos() const
-	{
-		return this->currentLocalPos;
-	}
-	
-	void SetWindow( Window * win_ )
-	{
-		this->win = win_;
-		this->UpdateSize();
-	}
-	
-	Drawer()
-	{
-		this->win = nullptr;
-		this->w = 0;
-		this->h = 0;
-		this->rawData = NULL;
-		this->data = NULL;
-		this->bytes = 0;
-	}
-	
-	~Drawer()
-	{
-		if( this->rawData )
-			Free( this->rawData );
-		if( this->data )
-			Free( this->data );
-	}
+	Drawer();
+	~Drawer();
 };
 
 #endif

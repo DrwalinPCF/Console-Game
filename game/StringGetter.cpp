@@ -2,7 +2,9 @@
 #ifndef STRING_GETTER_CPP
 #define STRING_GETTER_CPP
 
-#include "World2.hpp"
+#include "World2.h"
+
+#include <conio.h>
 
 std::string StringGetter::GetString( Window * window )
 {

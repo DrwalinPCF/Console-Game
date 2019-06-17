@@ -4,7 +4,9 @@
 
 #include "../engine/Utility.hpp"
 
-#include "World2.hpp"
+#include "World2.h"
+
+#include <conio.h>
 
 void World2::BeginDrawingMenu( MenuTypes menu )
 {

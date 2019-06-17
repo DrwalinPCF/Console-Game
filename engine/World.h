@@ -8,7 +8,7 @@
 #include <string>
 
 #include "Vector.hpp"
-#include "Window.hpp"
+#include "Window.h"
 
 #include "Actor.h"
 #include "Map.h"

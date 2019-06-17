@@ -3,7 +3,7 @@
 #define PROJECTILE_CPP
 
 #include "Projectile.h"
-#include "Character.hpp"
+#include "Character.h"
 
 void Projectile::SetVelocity( Vector direction, unsigned velocity, int timeToDespawn )
 {

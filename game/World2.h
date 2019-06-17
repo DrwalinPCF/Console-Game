@@ -1,20 +1,12 @@
 
-#ifndef WORLD_2_HPP
-#define WORLD_2_HPP
-
-#include <cstdlib>
-#include <ctime>
+#ifndef WORLD_2_H
+#define WORLD_2_H
 
 #include <vector>
 #include <string>
 
-#include <conio.h>
-
 #include "../engine/World.h"
 #include "../engine/Drawer.hpp"
-
-#include "Player.hpp"
-#include "DrawerPreprocessor.hpp"
 
 class StringGetter
 {
@@ -53,17 +45,8 @@ public:
 	
 	virtual void DrawGUI( Window * window ) override;
 	
-	World2()
-	{
-		Free( this->mapDrawer );
-		this->mapDrawer = Allocate<DrawerPreprocessor>();
-		this->mapDrawer->SetWindow( this->mapScr );
-		this->menuType = MenuTypes::NONE;
-	}
-	
-	~World2()
-	{
-	}
+	World2();
+	~World2();
 };
 
 #include "StringGetter.cpp"
