@@ -2,9 +2,11 @@
 #ifndef REGISTER_TYPES_CPP
 #define REGISTER_TYPES_CPP
 
-#include "../engine/Utility.cpp"
+#include "RegisterTypes.h"
 
-#include "../engine/World.cpp"
+#include "../engine/Utility.hpp"
+
+#include "../engine/World.h"
 
 #include "Block.h"
 #include "Player.h"

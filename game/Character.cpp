@@ -2,7 +2,6 @@
 #ifndef CHARACTER_CPP
 #define CHARACTER_CPP
 
-#include "../engine/Map.h"
 #include "../engine/World.h"
 #include "Projectile.h"
 

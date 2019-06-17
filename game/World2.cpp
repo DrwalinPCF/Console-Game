@@ -1,6 +1,6 @@
 
-#ifndef WORLD_2_CPP
-#define WORLD_2_CPP
+#ifndef WORLD2_CPP
+#define WORLD2_CPP
 
 #include "World2.h"
 

@@ -34,6 +34,7 @@ public:
 	void GenerateActors();
 	
 	void GenerateRandom( float filling );
+	void GeneratePerlinNoise();
 	
 	WorldGenerator( World * world, Vector begin, Vector end );
 	~WorldGenerator();

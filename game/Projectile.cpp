@@ -4,6 +4,7 @@
 
 #include "Projectile.h"
 #include "Character.h"
+#include "../engine/World.h"
 
 void Projectile::SetVelocity( Vector direction, unsigned velocity, int timeToDespawn )
 {

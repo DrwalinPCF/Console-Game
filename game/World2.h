@@ -1,6 +1,6 @@
 
-#ifndef WORLD_2_H
-#define WORLD_2_H
+#ifndef WORLD2_H
+#define WORLD2_H
 
 #include <vector>
 #include <string>
@@ -48,10 +48,6 @@ public:
 	World2();
 	~World2();
 };
-
-#include "StringGetter.cpp"
-#include "DrawMenu.cpp"
-#include "DrawGUI.cpp"
 
 #endif
 
