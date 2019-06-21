@@ -1,6 +1,6 @@
 
 LIBS = -lm -lpthread -lfreetype
-CFLAGS = -m64 -static-libgcc -Ofast -std=c++17 -w -I"C:\mingw-w64\include" -pipe -s
+CFLAGS = -m64 -static-libgcc -std=c++17 -w -I"C:\mingw-w64\include" -pipe -O0
 CC = g++
 EXECUTABLE = main.exe
 

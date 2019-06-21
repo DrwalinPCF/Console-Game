@@ -9,6 +9,8 @@
 #include <typeinfo>
 #include <vector>
 
+#include "Vector.hpp"
+
 struct MEMORYSTRUCT
 {
 	unsigned long long elements;
@@ -168,6 +170,8 @@ inline std::vector < std::string > SubdivideString( const std::string & str )
 }
 
 bool IsKeyDown( int keyId );
+std::string GetLastErrorAsString();
+Vector GetMousePosition();
 
 #endif
 

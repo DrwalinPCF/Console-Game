@@ -51,6 +51,9 @@ protected:
 	
 public:
 	
+	Vector GetScreenOffset() const;
+	Vector GetWorldCursorPosition() const;
+	
 	const Actor * GetRegisteredActorByTypeName( const std::string & name ) const;
 	
 	long long GetActorTicksPerWorldTick() const{ return this->numberOfActorTicksPerWorldTick; }

@@ -14,6 +14,16 @@
 
 #include <conio.h>
 
+Vector World::GetScreenOffset() const
+{
+	return this->screenOffset;
+}
+
+Vector World::GetWorldCursorPosition() const
+{
+	return this->screenOffset + GetMousePosition();
+}
+
 const Actor * World::GetRegisteredActorByTypeName( const std::string & name ) const
 {
 	auto it = this->registeredActors.find( name );

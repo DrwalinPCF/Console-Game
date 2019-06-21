@@ -9,7 +9,6 @@
 
 #include "../engine/Utility.hpp"
 
-#include "../engine/World.h"
 #include "World2.h"
 #include "Player.h"
 #include "Mob.h"
@@ -23,7 +22,7 @@ int main()
 	
 	try
 	{
-		World * world = Allocate<World2>();
+		World2 * world = Allocate<World2>();
 		
 		RegisterTypes( world );
 		
