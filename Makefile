@@ -1,7 +1,7 @@
 
 LIBS = -lm -lpthread -lfreetype
-CFLAGS = -m64 -static-libgcc -std=c++17 -w -I"C:\mingw-w64\include" -pipe -O0
-CC = g++
+CFLAGS = -m64 -static-libgcc -std=c++17 -w -I"C:\mingw-w64-ramdisk\include" -pipe -O0
+CC = C:/mingw-w64-ramdisk/x86_64-8.1.0-posix-seh/mingw64/bin/g++.exe
 EXECUTABLE = main.exe
 
 BINARYPATH = ./bin
@@ -9,8 +9,8 @@ ENGINEPATH = ./engine
 GAMEPATH = ./game
 
 
-OBJECTS = ./bin/Actor.o ./bin/Drawer.o ./bin/Map.o ./bin/Utility.o ./bin/Vector.o ./bin/Window.o ./bin/World.o
-OBJECTS += ./bin/Block.o ./bin/Character.o ./bin/DrawerPreprocessor.o ./bin/Mob.o ./bin/Perlin.o ./bin/Player.o ./bin/Projectile.o ./bin/RegisterTypes.o ./bin/World2.o ./bin/WorldGenerator.o
+OBJECTS = ./bin/BlockState.o ./bin/Actor.o ./bin/Drawer.o ./bin/Map.o ./bin/Utility.o ./bin/Vector.o ./bin/Window.o ./bin/World.o
+OBJECTS += ./bin/Character.o ./bin/DrawerPreprocessor.o ./bin/Mob.o ./bin/Perlin.o ./bin/Player.o ./bin/Projectile.o ./bin/RegisterTypes.o ./bin/World2.o ./bin/WorldGenerator.o
 OBJECTS += ./bin/Main.o
 
 
@@ -46,7 +46,11 @@ DRAWER_DEPS = ./engine/Drawer.hpp $(WINDOW_DEPS)
 ./bin/Drawer.o: ./engine/Drawer.cpp $(DRAWER_DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-MAP_DEPS = ./engine/Map.h ./engine/Actor.h ./engine/World.h $(DRAWER_DEPS)
+BLOCKSTATE_DEPS = ./engine/BlockState.h $(DRAWER_DEPS)
+./bin/BlockState.o: ./engine/BlockState.cpp $(BLOCKSTATE_DEPS)
+	$(CC) -c -o $@ $< $(CFLAGS)
+
+MAP_DEPS = ./engine/Map.h ./engine/Actor.h ./engine/World.h $(DRAWER_DEPS) $(BLOCKSTATE_DEPS)
 ./bin/Map.o: ./engine/Map.cpp $(MAP_DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
@@ -59,14 +63,10 @@ WORLD_DEPS = $(ACTOR_DEPS) $(DRAWER_DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 
-	
-	
-	
-	
-	
-BLOCK_DEPS = ./game/Block.h $(ACTOR_DEPS)
-./bin/Block.o: ./game/Block.cpp $(BLOCK_DEPS)
-	$(CC) -c -o $@ $< $(CFLAGS)
+
+
+
+
 
 PROJECTILE_DEPS = ./game/Projectile.h ./game/Character.h $(ACTOR_DEPS)
 ./bin/Projectile.o: ./game/Projectile.cpp $(PROJECTILE_DEPS)
@@ -100,7 +100,7 @@ WORLD2_DEPS = ./game/World2.h $(UTILITY_DEPS) $(DRAWERPREPROCESSOR_DEPS) ./game/
 ./bin/World2.o: ./game/World2.cpp $(WORLD2_DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 	
-WORLDGENERATOR_DEPS = ./game/WorldGenerator.h $(BLOCK_DEPS) $(PERLIN_DEPS) $(WORLD)
+WORLDGENERATOR_DEPS = ./game/WorldGenerator.h $(PERLIN_DEPS) $(WORLD)
 ./bin/WorldGenerator.o: ./game/WorldGenerator.cpp $(WORLDGENERATOR_DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 	
@@ -114,7 +114,7 @@ WORLDGENERATOR_DEPS = ./game/WorldGenerator.h $(BLOCK_DEPS) $(PERLIN_DEPS) $(WOR
 	
 MAIN_DEPS = $(DRAWERPREPROCESSOR_DEPS) ./game/RegisterTypes.cpp $(WORLDGENERATOR_DEPS)
 ./bin/Main.o: ./game/Main.cpp $(MAIN_DEPS)
-	$(CC) -c -o $@ $< $(CFLAGS) -L"C:\mingw-w64\lib"
+	$(CC) -c -o $@ $< $(CFLAGS) -L"C:\mingw-w64-ramdisk\lib"
 	
 	
 	

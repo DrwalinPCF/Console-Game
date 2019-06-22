@@ -19,7 +19,7 @@ bool Actor::SetPos( const Vector & loc )
 		{
 			Vector temp = this->pos;
 			this->pos = loc;
-			if( this->IsWalkable() || this->world->GetMap()->IsSpaceWalkable( this->GetAABBmin(), this->GetAABBmax(), {this} ) )
+			if( this->IsWalkable() || this->world->GetMap()->IsSpaceWalkable( this->pos, this->pos, {this} ) )
 			{
 				this->world->GetMap()->UpdateActor( this );
 				return true;
@@ -40,26 +40,6 @@ Vector Actor::GetPos() const
 	return this->pos;
 }
 
-Vector Actor::GetSize() const
-{
-	return this->size;
-}
-
-Vector Actor::GetAABBmin() const
-{
-	return this->pos;
-}
-
-Vector Actor::GetAABBmax() const
-{
-	return this->pos + this->size - Vector(1,1);
-}
-
-bool Actor::InBounds( const Vector & min, const Vector & max ) const
-{
-	return Vector::BoundInBound( this->GetAABBmin(), this->GetAABBmax(), min, max );
-}
-
 void Actor::Save( std::ostream & file ) const
 {
 	if( file.good() )
@@ -67,8 +47,6 @@ void Actor::Save( std::ostream & file ) const
 		file << this->name << " ";
 		file << this->pos.x << " ";
 		file << this->pos.y << " ";
-		file << this->size.x << " ";
-		file << this->size.y << " ";
 	}
 }
 
@@ -79,15 +57,12 @@ void Actor::Load( std::istream & file )
 		file >> this->name;
 		file >> this->pos.x;
 		file >> this->pos.y;
-		file >> this->size.x;
-		file >> this->size.y;
 	}
 }
 
-void Actor::Spawn( const std::string & name, const Vector & pos, const Vector & size )
+void Actor::Spawn( const std::string & name, const Vector & pos )
 {
 	this->pos = pos;
-	this->size = size;
 	this->name = name;
 }
 

@@ -114,9 +114,9 @@ void Projectile::Load( std::istream & file )
 	file >> this->changedPositionBy.y;
 }
 
-void Projectile::Spawn( const std::string & name, const Vector & pos, const Vector & size )
+void Projectile::Spawn( const std::string & name, const Vector & pos )
 {
-	Actor::Spawn( name, pos, size );
+	Actor::Spawn( name, pos );
 	this->direction = Vector( 1, 0 );
 	this->velocity = 7;
 	this->timeToDespawn = this->world->GetCurrentMoment() + 1000;

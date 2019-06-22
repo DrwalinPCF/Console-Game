@@ -2,47 +2,44 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include <unordered_map>
 #include <unordered_set>
+#include <unordered_map>
 #include <vector>
 #include <set>
 #include <map>
 
 #include "Vector.hpp"
-
-#include "Actor.h"
+#include "BlockState.h"
 
 class Map
 {
 private:
 	
-	const Vector MODIFIER;
-	const long long DIVIDER;
+	std::unordered_map < class Actor*, Vector > actorPreviousPositions;
+	std::map < loctype, std::map < loctype, std::unordered_set<class Actor*> > > actors;
 	
-	class Box
-	{
-	public:
-		Vector min;
-		Vector max;
-		Actor * actor;
-		Box();
-	};
-	
-	std::map < Vector, std::unordered_set<Actor*> > space;
-	
-	std::unordered_map < Actor*, Box* > actors;
+	Vector size;
+	class BlockState ** space;
 	
 public:
 	
-	void AddActor( Actor * actor );
-	void RemoveActor( Actor * actor );
+	Vector GetSize() const;
 	
-	void UpdateActor( Actor * actor );
+	void SetBlockState( Vector pos, BlockState state );
+	const BlockState GetBlockState( Vector pos ) const;
+	BlockState & GetBlockState( Vector pos );
 	
-	void GetActors( const Vector & min, const Vector & max, const std::set<Actor*> & ignoreActors, std::set<Actor*> & ret ) const;
-	bool IsSpaceWalkable( const Vector & min, const Vector & max, const std::set<Actor*> & ignoreActors = std::set<Actor*>() ) const;
+	void AddActor( class Actor * actor );
+	void RemoveActor( class Actor * actor );
+	
+	void UpdateActor( class Actor * actor );
+	
+	void GetActors( const Vector & min, const Vector & max, const std::set<class Actor*> & ignoreActors, std::set<class Actor*> & ret );
+	bool IsSpaceWalkable( const Vector & min, const Vector & max, const std::set<class Actor*> & ignoreActors = std::set<class Actor*>() );
 	
 	void Clear();
+	void Destroy();
+	void Init( Vector size );
 	
 	Map();
 	~Map();

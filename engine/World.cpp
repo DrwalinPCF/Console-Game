@@ -97,13 +97,13 @@ void World::AddActor( Actor * ptr )
 	}
 }
 
-void World::AddActor( std::string name, Vector pos, Vector size, Actor * ptr )
+void World::AddActor( std::string name, Vector pos, Actor * ptr )
 {
 	auto it = this->actors.find( name );
 	if( it == this->actors.end() )
 	{
 		ptr->Init( this );
-		ptr->Spawn( name, pos, size );
+		ptr->Spawn( name, pos );
 		this->actors[ name ] = ptr;
 		this->map->AddActor( ptr );
 		if( ptr->NeedTick() == true )
@@ -332,14 +332,17 @@ void World::Draw( unsigned deltaTime )
 			auto it = this->actors.find( this->centeredActorName );
 			if( it != this->actors.end() )
 			{
-				this->screenOffset = it->second->GetPos() + ( it->second->GetSize() / 2 ) - ( this->mapDrawer->GetWinSize() / 2 );
+				this->screenOffset = it->second->GetPos() - ( this->mapDrawer->GetWinSize() / 2 );
 				this->mapDrawer->SetPlayerPos( it->second->GetPos() - this->screenOffset );
 			}
 		}
 		
 		std::set <Actor*> toDraw;
 		std::set <Actor*> ignores;
-		this->map->GetActors( Vector(0,0) + this->screenOffset, Vector(0,0) + this->screenOffset + this->mapDrawer->GetWinSize(), ignores, toDraw );
+		Vector beg = this->screenOffset;
+		Vector end = this->screenOffset + this->mapDrawer->GetWinSize();
+		
+		this->map->GetActors( beg, end, ignores, toDraw );
 		
 		this->mapDrawer->Clear();
 		for( auto it = toDraw.begin(); it != toDraw.end(); ++it )
@@ -347,6 +350,25 @@ void World::Draw( unsigned deltaTime )
 			this->mapDrawer->SetCurrentFlags( (*it)->IsStaticallyDrawn(), (*it)->GetOpaqueness() );
 			this->mapDrawer->SetCurrentPos( (*it)->GetPos() - this->screenOffset );
 			(*it)->Draw( deltaTime, this->mapDrawer );
+		}
+		if( beg.x < 0 )
+			beg.x = 0;
+		if( beg.y < 0 )
+			beg.y = 0;
+		if( end.x >= this->map->GetSize().x )
+			end.x >= this->map->GetSize().x - 1;
+		if( end.y >= this->map->GetSize().y )
+			end.y >= this->map->GetSize().y - 1;
+		Vector p;
+		for( p.x = beg.x; p.x <= end.x; ++p.x )
+		{
+			for( p.y = beg.y; p.y <= end.y; ++p.y )
+			{
+				BlockState & state = this->map->GetBlockState( p );
+				this->mapDrawer->SetCurrentFlags( state.IsStaticallyDrawn(), state.GetOpaqueness() );
+				this->mapDrawer->SetCurrentPos( p - this->screenOffset );
+				state.Draw( this->mapDrawer );
+			}
 		}
 		this->mapDrawer->Redraw();
 		
@@ -443,6 +465,7 @@ World::World() :
 	}
 	
 	this->map = Allocate<Map>();
+	this->map->Init( Vector( 8192, 8192 ) );
 	this->screen = Allocate<Window>();
 	this->mapScr = Allocate<Window>();
 	this->guiScr = Allocate<Window>();

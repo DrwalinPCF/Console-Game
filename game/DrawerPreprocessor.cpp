@@ -64,17 +64,18 @@ void DrawerPreprocessor::Preprocess()
 	
 	Vector end(0,0);
 	for( ; end.x+1 < this->w; ++end.x )
-		this->ScanOneLine( this->playerPos, end, 25 );
+		this->ScanOneLine( this->playerPos, end, 28 );
 	for( ; end.y+1 < this->h; ++end.y )
-		this->ScanOneLine( this->playerPos, end, 25 );
+		this->ScanOneLine( this->playerPos, end, 28 );
 	for( ; end.x > 0; --end.x )
-		this->ScanOneLine( this->playerPos, end, 25 );
+		this->ScanOneLine( this->playerPos, end, 28 );
 	for( ; end.y > 0; --end.y )
-		this->ScanOneLine( this->playerPos, end, 25 );
+		this->ScanOneLine( this->playerPos, end, 28 );
 	
 	char sign;
 	WORD color;
 	int i, j;
+	
 	for( i = 0; i < this->w; ++i )
 	{
 		for( j = 0; j < this->h; ++j )

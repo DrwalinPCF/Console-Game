@@ -3,47 +3,57 @@
 #define MAP_CPP
 
 #include "Map.h"
+#include "BlockState.h"
 
-Map::Box::Box()
+#include "Actor.h"
+
+#include "Utility.hpp"
+
+Vector Map::GetSize() const
 {
-	min = Vector(0,0);
-	max = Vector(0,0);
-	actor = NULL;
+	return this->size;
 }
+
+void Map::SetBlockState( Vector pos, BlockState state )
+{
+	if( pos.x >= 0 && pos.y >= 0 && pos.x < this->size.x && pos.y < this->size.y )
+	{
+		this->space[pos.x][pos.y] = state;
+	}
+}
+
+const BlockState Map::GetBlockState( Vector pos ) const
+{
+	if( pos.x >= 0 && pos.y >= 0 && pos.x < this->size.x && pos.y < this->size.y )
+	{
+		return this->space[pos.x][pos.y];
+	}
+	return BlockState();
+}
+
+BlockState & Map::GetBlockState( Vector pos )
+{
+	if( pos.x >= 0 && pos.y >= 0 && pos.x < this->size.x && pos.y < this->size.y )
+	{
+		return this->space[pos.x][pos.y];
+	}
+	return BlockState::GetPureReference();
+}
+
 
 void Map::AddActor( Actor * actor )
 {
 	if( actor )
 	{
-		if( this->actors.find( actor ) != this->actors.end() )
+		if( this->actorPreviousPositions.find( actor ) != this->actorPreviousPositions.end() )
 		{
 			this->UpdateActor( actor );
 		}
 		else
 		{
-			Map::Box * box = Allocate<Map::Box>();
-			if( box )
-			{
-				box->min = actor->GetAABBmin();
-				box->max = actor->GetAABBmax();
-				
-				if( box->min.x > box->max.x )
-					std::swap( box->min.x, box->max.x );
-				if( box->min.y > box->max.y )
-					std::swap( box->min.y, box->max.y );
-				
-				box->actor = actor;
-				this->actors[ actor ] = box;
-				
-				Vector pos;
-				for( pos.x = box->min.x; pos.x <= box->max.x; ++pos.x )
-				{
-					for( pos.y = box->min.y; pos.y <= box->max.y; ++pos.y )
-					{
-						this->space[pos].insert( actor );
-					}
-				}
-			}
+			Vector pos = actor->GetPos();
+			this->actorPreviousPositions[actor] = pos;
+			this->actors[pos.x][pos.y].insert( actor );
 		}
 	}
 }
@@ -52,31 +62,23 @@ void Map::RemoveActor( Actor * actor )
 {
 	if( actor )
 	{
-		auto it = this->actors.find( actor );
-		if( it != this->actors.end() )
+		auto it = actorPreviousPositions.find( actor );
+		if( it != actorPreviousPositions.end() )
 		{
-			Box * box = it->second;
-			
-			Vector pos;
-			for( pos.x = box->min.x; pos.x <= box->max.x; ++pos.x )
+			Vector pos = it->second;
+			auto it1 = this->actors.find( pos.x );
+			if( it1 != this->actors.end() )
 			{
-				for( pos.y = box->min.y; pos.y <= box->max.y; ++pos.y )
+				auto it2 = it1->second.find( pos.y );
+				if( it2 != it1->second.end() )
 				{
-					auto it = this->space.find( pos );
-					if( it != this->space.end() )
-					{
-						it->second.erase( actor );
-						if( it->second.empty() )
-						{
-							this->space.erase( it );
-						}
-					}
+					it2->second.erase( actor );
+					if( it2->second.size() == 0 )
+						it1->second.erase( it2 );
 				}
+				if( it1->second.size() == 0 )
+					this->actors.erase( it1 );
 			}
-			
-			Free( it->second );
-			it->second = nullptr;
-			this->actors.erase( it );
 		}
 	}
 }
@@ -85,121 +87,149 @@ void Map::UpdateActor( Actor * actor )
 {
 	if( actor )
 	{
-		auto it = this->actors.find( actor );
-		if( it != this->actors.end() )
+		Vector pos;
+		auto it = this->actorPreviousPositions.find( actor );
+		if( it != this->actorPreviousPositions.end() )
 		{
-			Box * box = it->second;
-			
-			Vector pos;
-			for( pos.x = box->min.x; pos.x <= box->max.x; ++pos.x )
+			pos = it->second;
+			auto it1 = this->actors.find( pos.x );
+			if( it1 != this->actors.end() )
 			{
-				for( pos.y = box->min.y; pos.y <= box->max.y; ++pos.y )
+				auto it2 = it1->second.find( pos.y );
+				if( it2 != it1->second.end() )
 				{
-					auto it = this->space.find( pos );
-					if( it != this->space.end() )
-					{
-						it->second.erase( actor );
-						if( it->second.empty() )
-						{
-							this->space.erase( it );
-						}
-					}
+					it2->second.erase( actor );
+					if( it2->second.size() == 0 )
+						it1->second.erase( it2 );
 				}
+				if( it1->second.size() == 0 )
+					this->actors.erase( it1 );
 			}
 			
-			box->min = actor->GetAABBmin();
-			box->max = actor->GetAABBmax();
-			
-			if( box->min.x > box->max.x )
-				std::swap( box->min.x, box->max.x );
-			if( box->min.y > box->max.y )
-				std::swap( box->min.y, box->max.y );
-			
-			for( pos.x = box->min.x; pos.x <= box->max.x; ++pos.x )
-			{
-				for( pos.y = box->min.y; pos.y <= box->max.y; ++pos.y )
-				{
-					this->space[pos].insert( actor );
-				}
-			}
+			pos = actor->GetPos();
+			it->second = pos;
 		}
 		else
 		{
-			this->AddActor( actor );
+			pos = actor->GetPos();
+			this->actorPreviousPositions[actor] = pos;
 		}
+		
+		this->actors[pos.x][pos.y].insert( actor );
 	}
 }
 
-void Map::GetActors( const Vector & min, const Vector & max, const std::set<Actor*> & ignoreActors, std::set<Actor*> & ret ) const
+void Map::GetActors( const Vector & min, const Vector & max, const std::set<Actor*> & ignoreActors, std::set<Actor*> & ret )
 {
-	Vector pos;
-	for( pos.x = min.x; pos.x <= max.x; ++pos.x )
+	auto endx = this->actors.lower_bound( max.x+1 );
+	for( auto itx = this->actors.upper_bound( min.x-1 ); itx != endx; ++itx )
 	{
-		for( pos.y = min.y; pos.y <= max.y; ++pos.y )
+		auto endy = itx->second.lower_bound( max.y+1 );
+		for( auto ity = itx->second.upper_bound( min.y-1 ); ity != endy; ++ity )
 		{
-			auto it_ = this->space.find( pos );
-			if( it_ != this->space.end() )
+			for( auto it = ity->second.begin(); it != ity->second.end(); ++it )
 			{
-				for( auto it = it_->second.begin(); it != it_->second.end(); ++it )
+				if( ignoreActors.find( *it ) == ignoreActors.end() )
 				{
-					if( (*it)->InBounds( min, max ) )
-					{
-						if( ignoreActors.find(*it) == ignoreActors.end() )
-						{
-							ret.insert( *it );
-						}
-					}
+					ret.insert( *it );
 				}
 			}
 		}
 	}
 }
 
-bool Map::IsSpaceWalkable( const Vector & min, const Vector & max, const std::set<Actor*> & ignoreActors ) const
+bool Map::IsSpaceWalkable( const Vector & min, const Vector & max, const std::set<Actor*> & ignoreActors )
 {
-	Vector pos;
-	for( pos.x = min.x; pos.x <= max.x; ++pos.x )
 	{
-		for( pos.y = min.y; pos.y <= max.y; ++pos.y )
+		auto endx = this->actors.lower_bound( max.x+1 );
+		for( auto itx = this->actors.upper_bound( min.x-1 ); itx != endx; ++itx )
 		{
-			auto it_ = this->space.find( pos );
-			if( it_ != this->space.end() )
+			auto endy = itx->second.lower_bound( max.y+1 );
+			for( auto ity = itx->second.upper_bound( min.y-1 ); ity != endy; ++ity )
 			{
-				for( auto it = it_->second.begin(); it != it_->second.end(); ++it )
+				for( auto it = ity->second.begin(); it != ity->second.end(); ++it )
 				{
 					if( (*it)->IsWalkable() == false )
 					{
-						if( (*it)->InBounds( min, max ) )
+						if( ignoreActors.find( (*it) ) == ignoreActors.end() )
 						{
-							if( ignoreActors.find(*it) == ignoreActors.end() )
-							{
-								return false;
-							}
+							return false;
 						}
 					}
 				}
 			}
 		}
 	}
+	
+	{
+		BlockState ** endx = &(this->space[(max.x>this->size.x)?(this->size.x-1):max.x]);
+		for( BlockState ** px = &(this->space[(min.x<0)?0:min.x]); px <= endx; ++px )
+		{
+			BlockState * endy = &((*px)[(max.y>=this->size.y)?(this->size.y-1):max.y]);
+			for( BlockState * py = &((*px)[(min.y<0)?0:min.y]); py <= endy; ++py )
+			{
+				if( py->IsWalkable() == false )
+				{
+					return false;
+				}
+			}
+		}
+	}
+	
 	return true;
 }
 
 void Map::Clear()
 {
-	for( auto it = this->actors.begin(); it != this->actors.end(); ++it )
-		Free( it->second );
 	this->actors.clear();
-	this->space.clear();
+	this->actorPreviousPositions.clear();
+	this->size = Vector( 0, 0 );
+	if( this->space )
+	{
+		BlockState ** end = this->space + this->size.x;
+		for( BlockState ** it = this->space; it < end; ++it )
+		{
+			memset( *it, 0, this->size.y );
+		}
+	}
 }
 
-Map::Map() :
-	MODIFIER(0,0), DIVIDER(1)
+void Map::Destroy()
 {
+	this->Clear();
+	if( this->space )
+	{
+		BlockState ** end = this->space + this->size.x;
+		for( BlockState ** it = this->space; it < end; ++it )
+		{
+			Free( *it );
+		}
+		Free( this->space );
+		this->space = NULL;
+	}
+}
+
+void Map::Init( Vector size )
+{
+	this->Destroy();
+	this->size = size;
+	this->space = Allocate<BlockState*>( this->size.x );
+	BlockState ** end = this->space + this->size.x;
+	for( BlockState ** it = this->space; it < end; ++it )
+	{
+		*it = Allocate<BlockState>( this->size.y );
+	}
+}
+
+Map::Map()
+{
+	this->size = Vector( 0, 0 );
+	this->space = NULL;
 }
 
 Map::~Map()
 {
-	this->Clear();
+	this->Destroy();
 }
 
 #endif

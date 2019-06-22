@@ -13,12 +13,10 @@ class Actor
 protected:
 	
 	Vector pos;
-	Vector size;
 	std::string name;
 	class World * world;
 	
 public:
-	
 	
 	std::string GetName() const;
 	
@@ -32,21 +30,16 @@ public:
 	bool Move( const Vector & move );
 	
 	Vector GetPos() const;
-	Vector GetSize() const;
 	
 	
 	virtual void Draw( unsigned deltaTime, class Drawer * drawer ){}// = 0;
-	Vector GetAABBmin() const;
-	Vector GetAABBmax() const;
-	
-	bool InBounds( const Vector & min, const Vector & max ) const;
 	
 	virtual void Save( std::ostream & file ) const;
 	virtual void Load( std::istream & file );
 	
 	virtual unsigned Tick(){return 50;}// = 0;
 	
-	virtual void Spawn( const std::string & name, const Vector & pos, const Vector & size );
+	virtual void Spawn( const std::string & name, const Vector & pos );
 	virtual void Despawn();
 	
 	virtual void Init( class World * world );

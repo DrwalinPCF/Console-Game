@@ -99,14 +99,11 @@ void World2::DrawDeveloperConsole( Window * window )
 				{
 					std::string actorName = in[2];
 					int x, y;
-					int sx, sy;
 					x = atoi(in[3].c_str());
 					y = atoi(in[4].c_str());
-					sx = atoi(in[5].c_str());
-					sy = atoi(in[6].c_str());
 					if( this->actors.find( actorName ) == this->actors.end() )
 					{
-						this->AddActor( actorName, Vector(x,y), Vector(sx,sy), type->Make() );
+						this->AddActor( actorName, Vector(x,y), type->Make() );
 					}
 					else
 					{

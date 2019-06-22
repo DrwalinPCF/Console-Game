@@ -4,7 +4,8 @@
 
 #include "WorldGenerator.h"
 
-#include "Block.h"
+#include "../engine/Map.h"
+#include "../engine/BlocKState.h"
 
 void WorldGenerator::GameOfLifeStep( const int minToGetAlive, const int minBorderLife, const int maxBorderLife, int radius )
 {
@@ -44,24 +45,17 @@ void WorldGenerator::GenerateActors()
 {
 	int i, j, prev;
 	
+	Map * spaceMap = this->world->GetMap();
+	
 	auto & map = this->isCurrentlyA ? this->mapA : this->mapB;
 	
 	for( i = 0; i < this->size.x; ++i )
 	{
 		auto & line = map[i];
-		j = 0;
-		
-		while( j < this->size.y )
+		for( j = 0; j < this->size.y; ++j )
 		{
-			for( ; j < this->size.y && line[j] == false; ++j );
-			if( j >= this->size.y )
-				break;
-			prev = j;
-			for( ; j < this->size.y && line[j] == true; ++j );
-			
-			int l = j - prev;
-			
-			this->world->AddActor( this->world->GetNewUniqueActorName(), Vector( i, prev ) + this->begin, Vector( 1, l ), Allocate<Block>() );
+			if( line[j] )
+				spaceMap->SetBlockState( Vector( i, j ), BlockState(1) );
 		}
 	}
 }

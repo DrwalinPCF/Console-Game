@@ -31,8 +31,8 @@ int main()
 		wg.GenerateActors();
 		
 		
-		world->AddActor( "Player", Vector(0,0), Vector(1,1), Allocate<Player>() );
-		world->AddActor( "Mob_01", Vector(10,10), Vector(3,3), Allocate<Mob>() );
+		world->AddActor( "Player", Vector(0,0), Allocate<Player>() );
+		world->AddActor( "Mob_01", Vector(10,10), Allocate<Mob>() );
 		
 		world->CenterAtActor( "Player" );
 		

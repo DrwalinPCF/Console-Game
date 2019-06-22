@@ -18,14 +18,7 @@ bool Mob::NeedTick() const
 
 void Mob::Draw( unsigned deltaTime, class Drawer * drawer )
 {
-	long long x, y;
-	for( x = 0; x < size.x; ++x )
-	{
-		for( y = 0; y < size.y; ++y )
-		{
-			drawer->Draw( Vector(x,y), '_', FOREGROUND_GREEN | FOREGROUND_BLUE | BACKGROUND_RED );
-		}
-	}
+	drawer->Draw( Vector(0,0), '_', FOREGROUND_GREEN | FOREGROUND_BLUE | BACKGROUND_RED );
 }
 
 unsigned Mob::Tick()
@@ -51,9 +44,9 @@ void Mob::Load( std::istream & file )
 	file >> this->movementCooldown;
 }
 
-void Mob::Spawn( const std::string & name, const Vector & pos, const Vector & size )
+void Mob::Spawn( const std::string & name, const Vector & pos )
 {
-	Character::Spawn( name, pos, size );
+	Character::Spawn( name, pos );
 }
 
 void Mob::Despawn()

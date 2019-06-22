@@ -84,9 +84,9 @@ void Player::Load( std::istream & file )
 	Character::Load( file );
 }
 
-void Player::Spawn( const std::string & name, const Vector & pos, const Vector & size )
+void Player::Spawn( const std::string & name, const Vector & pos )
 {
-	Character::Spawn( name, pos, size );
+	Character::Spawn( name, pos );
 }
 
 void Player::Despawn()

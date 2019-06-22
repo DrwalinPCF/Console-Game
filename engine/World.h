@@ -76,7 +76,7 @@ public:
 	
 	bool RegisterType( Actor * constructer );
 	
-	void AddActor( std::string name, Vector pos, Vector size, Actor * ptr );
+	void AddActor( std::string name, Vector pos, Actor * ptr );
 	void AddActor( Actor * ptr );
 	
 	void DestroyActor( const std::string & name );

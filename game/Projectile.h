@@ -28,7 +28,7 @@ public:
 	
 	virtual void Save( std::ostream & file ) const override;
 	virtual void Load( std::istream & file ) override;
-	virtual void Spawn( const std::string & name, const Vector & pos, const Vector & size ) override;
+	virtual void Spawn( const std::string & name, const Vector & pos ) override;
 	virtual void Despawn() override;
 	virtual void Init( class World * world ) override;
 	virtual void Deinit() override;

@@ -36,17 +36,17 @@ void Character::Shoot()
 		
 		Vector projectileStartPosition = this->GetPos();
 		if( this->direction.x < 0 )
-			projectileStartPosition += Vector( -1, this->GetSize().y/2 );
+			projectileStartPosition += Vector( -1, 0 );
 		else if( this->direction.x > 0 )
-			projectileStartPosition += Vector( this->GetSize().x, this->GetSize().y/2 );
+			projectileStartPosition += Vector( 1, 0 );
 		else if( this->direction.y < 0 )
-			projectileStartPosition += Vector( this->GetSize().x/2, -1 );
+			projectileStartPosition += Vector( 0, -1 );
 		else if( this->direction.y > 0 )
-			projectileStartPosition += Vector( this->GetSize().x/2, this->GetSize().y );
+			projectileStartPosition += Vector( 0, 1 );
 		else
-			projectileStartPosition += Vector(-1,-1);
+			projectileStartPosition += Vector( -1, -1 );
 		
-		projectile->Spawn( this->world->GetNewUniqueActorName(), projectileStartPosition, Vector(1,1) );
+		projectile->Spawn( this->world->GetNewUniqueActorName(), projectileStartPosition );
 		
 		this->world->AddActor( projectile );
 		projectile->SetVelocity( this->direction, 100, (rand()%600)+2000 );
@@ -59,7 +59,7 @@ void Character::Attack()
 	if( this->attackCooldown <= this->world->GetCurrentMoment() )
 	{
 		std::set<Actor*> targets;
-		this->world->GetMap()->GetActors( this->GetPos()-Vector(1,1), this->GetPos()+this->GetSize(), {this}, targets );
+		this->world->GetMap()->GetActors( this->GetPos()-Vector(1,1), this->GetPos(), {this}, targets );
 		for( auto it = targets.begin(); it != targets.end(); ++it )
 		{
 			Character * ch = dynamic_cast<Character*>(*it);
@@ -132,9 +132,9 @@ void Character::Load( std::istream & file )
 	file >> this->direction.y;
 }
 
-void Character::Spawn( const std::string & name, const Vector & pos, const Vector & size )
+void Character::Spawn( const std::string & name, const Vector & pos )
 {
-	Actor::Spawn( name, pos, size );
+	Actor::Spawn( name, pos );
 	this->maxHp = 100;
 	this->hp = 100;
 	this->direction = Vector( 1, 0 );

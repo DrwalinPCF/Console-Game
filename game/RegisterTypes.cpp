@@ -8,7 +8,6 @@
 
 #include "../engine/World.h"
 
-#include "Block.h"
 #include "Player.h"
 #include "Character.h"
 #include "Mob.h"
@@ -16,7 +15,6 @@
 
 void RegisterTypes( World * world )
 {
-	world->RegisterType( Allocate<Block>() );
 	world->RegisterType( Allocate<Player>() );
 	world->RegisterType( Allocate<Mob>() );
 	world->RegisterType( Allocate<Projectile>() );
