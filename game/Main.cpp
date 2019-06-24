@@ -28,6 +28,15 @@ int main()
 		
 		WorldGenerator wg( world, Vector(0,0), Vector(1024,1024) );
 		wg.GeneratePerlinNoise();
+		wg.GameOfLifeStep( 7, 5, 9, 1 );
+		wg.GameOfLifeStep( 5, 3, 7, 1 );
+		wg.GameOfLifeStep( 5, 3, 7, 1 );
+		wg.GameOfLifeStep( 5, 3, 7, 1 );
+		wg.GameOfLifeStep( 5, 3, 7, 1 );
+		wg.GameOfLifeStep( 5, 3, 7, 1 );
+		wg.GameOfLifeStep( 5, 3, 7, 1 );
+		wg.GameOfLifeStep( 5, 3, 7, 1 );
+		wg.GameOfLifeStep( 5, 3, 7, 1 );
 		wg.GenerateActors();
 		
 		

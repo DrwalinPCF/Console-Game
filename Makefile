@@ -1,6 +1,6 @@
 
 LIBS = -lm -lpthread -lfreetype
-CFLAGS = -m64 -static-libgcc -std=c++17 -w -I"C:\mingw-w64-ramdisk\include" -pipe -O0
+CFLAGS = -m64 -std=c++17 -w -I"C:\mingw-w64-ramdisk\include" -pipe -O0
 CC = C:/mingw-w64-ramdisk/x86_64-8.1.0-posix-seh/mingw64/bin/g++.exe
 EXECUTABLEGAME = game.exe
 EXECUTABLEMAPGEN = mapgen.exe
@@ -27,11 +27,11 @@ testmapgen: $(EXECUTABLEMAPGEN)
 
 game: $(EXECUTABLEGAME)
 $(EXECUTABLEGAME): $(OBJECTS) ./bin/GameMain.o
-	$(CC) -o $@ $^ $(CFLAGS) -L"C:\mingw-w64-ramdisk\lib" -s
+	$(CC) -s -o $@ $^ $(CFLAGS) -L"C:\mingw-w64-ramdisk\lib" -s -static-libgcc
 
 mapgen: $(EXECUTABLEMAPGEN)
 $(EXECUTABLEMAPGEN): $(OBJECTS) ./bin/MapgenMain.o
-	$(CC) -o $@ $^ $(CFLAGS) -L"C:\mingw-w64-ramdisk\lib" -s
+	$(CC) -s -o $@ $^ $(CFLAGS) -L"C:\mingw-w64-ramdisk\lib" -s -static-libgcc
 
 
 

@@ -7,6 +7,8 @@
 #include "../engine/Map.h"
 #include "../engine/BlocKState.h"
 
+#include "../lib/Perlin.h"
+
 void WorldGenerator::GameOfLifeStep( const int minToGetAlive, const int minBorderLife, const int maxBorderLife, int radius )
 {
 	return;
@@ -76,7 +78,7 @@ void WorldGenerator::GenerateRandom( float filling )
 
 void WorldGenerator::GeneratePerlinNoise()
 {
-	Perlin perlin( 674864872142, 12 );
+	Perlin perlin( 674864872142, 1 );
 	auto & map = this->isCurrentlyA ? this->mapA : this->mapB;
 	int i, j;
 	for( i = 0; i < this->size.x; ++i )
@@ -85,10 +87,10 @@ void WorldGenerator::GeneratePerlinNoise()
 		for( j = 0; j < this->size.y; ++j )
 		{
 			float value = perlin.Noise( float(i)/10.0f, float(j)/10.0f );
-			if( value > 0.05f && value < 0.9f )
-				A[j] = true;
-			else
+			if( value > 0.1f && value < 0.9f )
 				A[j] = false;
+			else
+				A[j] = true;
 		}
 	}
 }
