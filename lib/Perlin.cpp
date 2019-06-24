@@ -19,7 +19,7 @@ float Perlin::Interpolate( float t, float a, float b )
 	if( t > 1 || t < 0 )
 		printf( "\n t = %f", t );
 	const float PI = 3.141592f;
-	float f = sin(t*PI*0.5f);
+	float f = (sin((t-0.5f)*PI)+1.0f)*0.5f;
 	return (a*f) + (b*(1.0f-f));
 }
 
@@ -39,78 +39,45 @@ float Perlin::GetScale() const
 
 float Perlin::Noise( float _x, float _y )
 {
-	int power = this->octaves;
-	int64_t dist = 1 << power;
-	
-	float fx = _x*float(dist);
-	float fy = _y*float(dist);
-	int64_t x = floor(fx);
-	int64_t y = floor(fy);
 	float value = 0.0f;
 	
-	int64_t bx, by, ex, ey;
-	bx = floor(_x) * float(dist);
-	by = floor(_y) * float(dist);
-	ex = bx + dist;
-	ey = by + dist;
+	int64_t x, y;
+	float mult = 1.0f;
+	float _exp = 0.7f;
 	
-	fx -= bx;
-	fy -= by;
+	float sum = 0.0f;
 	
-	float mult = 0.5f;
-	
-	int64_t modx = this->noise.GetRandom64( 0, 1 ), mody = this->noise.GetRandom64( 2, 3 );
-	
-	for( ; power > 1; --power, mult *= 0.5f )
+	for( int i = 0; i < this->octaves; ++i, mult *= _exp, _exp *= 0.97f )
 	{
-		if( dist < 1 )
-			break;
+		x = (int64_t)floor( _x * float(1<<i) );
+		y = (int64_t)floor( _y * float(1<<i) );
 		
 		float a, b, c, d;
-		a = this->noise.GetRandomFloat( (bx + modx), (by + mody), -1.0f, 1.0f );
-		b = this->noise.GetRandomFloat( (bx + modx), (ey + mody), -1.0f, 1.0f );
-		c = this->noise.GetRandomFloat( (ex + modx), (by + mody), -1.0f, 1.0f );
-		d = this->noise.GetRandomFloat( (ex + modx), (ey + mody), -1.0f, 1.0f );
+		a = this->noise.GetRandomFloat( (x + this->octaveOffsetX[i]), (y + this->octaveOffsetY[i]), -1.0f, 1.0f );
+		b = this->noise.GetRandomFloat( (x + this->octaveOffsetX[i]), (y+1 + this->octaveOffsetY[i]), -1.0f, 1.0f );
+		c = this->noise.GetRandomFloat( (x+1 + this->octaveOffsetX[i]), (y + this->octaveOffsetY[i]), -1.0f, 1.0f );
+		d = this->noise.GetRandomFloat( (x+1 + this->octaveOffsetX[i]), (y+1 + this->octaveOffsetY[i]), -1.0f, 1.0f );
 		
-		value += Perlin::Interpolate( fx/float(dist), fy/float(dist), d, c, b, a ) * mult;
-		
-		dist >>= 1;
-		
-		if( fx < float(dist) )
-		{
-			ex -= float(dist);
-		}
-		else
-		{
-			bx += float(dist);
-			fx -= float(dist);
-		}
-		
-		if( fy < float(dist) )
-		{
-			ey -= float(dist);
-		}
-		else
-		{
-			by += float(dist);
-			fy -= float(dist);
-		}
-		
-		modx += this->noise.GetRandom64( mody, modx );
-		mody += this->noise.GetRandom64( modx, mody );
+		value += Perlin::Interpolate( modf(_x*float(1<<i),NULL), modf(_y*float(1<<i),NULL), d, c, b, a ) * mult;
+		sum += mult;
 	}
 	
-	return value;
+	return (value+(sum*0.375f))/(sum*0.75f);
 }
 
 void Perlin::Seed( uint64_t seed, int octaves )
 {
 	this->octaves = octaves;
 	this->noise.Seed( seed, this->GetScale() );
-	if( this->octaves > 16 )
-		this->octaves = 16;
+	if( this->octaves >= Perlin::maxOctaves )
+		this->octaves = Perlin::maxOctaves-1;
 	if( this->octaves < 1 )
 		this->octaves = 1;
+	for( int i = 0; i < Perlin::maxOctaves; ++i )
+	{
+		this->octaveOffsetX[i] = this->noise.GetDirectRandomValue();
+		this->octaveOffsetY[i] = this->noise.GetDirectRandomValue();
+	}
 }
 
 Perlin::Perlin( uint64_t seed, int octaves )

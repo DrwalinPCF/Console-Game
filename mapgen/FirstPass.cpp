@@ -14,7 +14,7 @@
 
 void GeneratorData::FirstPass()
 {
-	Perlin perlin( 3627563242, 10 );
+	Perlin perlin( 3627563242, this->octaves );
 	
 	printf( "\n first pass:\n" );
 	unsigned long long max = this->width * this->height;
@@ -24,7 +24,7 @@ void GeneratorData::FirstPass()
 		for( int j = 0; j < this->height; ++j, ++progress )
 		{
 			
-			int value = (perlin.Noise( float(i)*0.02f, float(j)*0.02f )+0.5f) * 200.0f;
+			int value = (perlin.Noise( float(i)*0.02f, float(j)*0.02f )+0.27f) * 130.9f;
 			
 			if( value < 0 )
 				value = 0;

@@ -13,6 +13,10 @@ private:
 	Noise noise;
 	int octaves;
 	
+	const static int maxOctaves = 60;
+	int64_t octaveOffsetX[Perlin::maxOctaves];
+	int64_t octaveOffsetY[Perlin::maxOctaves];
+	
 	float GetScale() const;
 	
 public:
