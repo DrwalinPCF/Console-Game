@@ -7,7 +7,7 @@
 #include <conio.h>
 
 
-#include "../engine/Utility.hpp"
+#include "../lib/Utility.hpp"
 
 #include "World2.h"
 #include "Player.h"
@@ -26,7 +26,7 @@ int main()
 		
 		RegisterTypes( world );
 		
-		WorldGenerator wg( world, Vector(-100,-100), Vector(100,100) );
+		WorldGenerator wg( world, Vector(0,0), Vector(1024,1024) );
 		wg.GeneratePerlinNoise();
 		wg.GenerateActors();
 		

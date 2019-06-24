@@ -8,7 +8,7 @@
 #include <set>
 #include <map>
 
-#include "Vector.hpp"
+#include "../lib/Vector.hpp"
 #include "BlockState.h"
 
 class Map

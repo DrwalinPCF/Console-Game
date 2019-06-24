@@ -10,7 +10,7 @@
 #include "World.h"
 #include "Actor.h"
 
-#include "Utility.hpp"
+#include "../lib/Utility.hpp"
 
 #include <conio.h>
 
@@ -465,7 +465,7 @@ World::World() :
 	}
 	
 	this->map = Allocate<Map>();
-	this->map->Init( Vector( 8192, 8192 ) );
+	this->map->Init( Vector( 1024, 1024 ) );
 	this->screen = Allocate<Window>();
 	this->mapScr = Allocate<Window>();
 	this->guiScr = Allocate<Window>();

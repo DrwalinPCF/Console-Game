@@ -5,7 +5,8 @@
 #include <string>
 #include <fstream>
 
-#include "Vector.hpp"
+#include "../lib/Vector.hpp"
+
 #include "Drawer.hpp"
 
 class Actor

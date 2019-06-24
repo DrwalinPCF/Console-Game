@@ -2,7 +2,7 @@
 #ifndef WINDOW_HPP
 #define WINDOW_HPP
 
-#include "../engine/Utility.hpp"
+#include "../lib/Utility.hpp"
 
 #include "Window.h"
 

@@ -2,7 +2,8 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include "Vector.hpp"
+#include "../lib/Vector.hpp"
+
 #include <cstdarg>
 
 #include <windows.h>

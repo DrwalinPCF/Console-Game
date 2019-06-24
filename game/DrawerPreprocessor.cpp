@@ -37,7 +37,7 @@ void DrawerPreprocessor::ScanOneLine( const Vector & start, const Vector & end, 
 			
 			currentData.viewDistance = previousData.viewDistance - currentData.opaqueness;
 			
-			if( currentData.viewDistance <= 5 )
+			if( currentData.viewDistance <= 1 )
 			{
 				if( t != 0 )
 					currentData.viewDistance = t;
@@ -45,7 +45,7 @@ void DrawerPreprocessor::ScanOneLine( const Vector & start, const Vector & end, 
 					return;
 			}
 			
-			currentData.viewDistance -= 5;
+			currentData.viewDistance -= 1;
 			
 			if( currentData.viewDistance < t )
 				currentData.viewDistance = t;
@@ -64,13 +64,13 @@ void DrawerPreprocessor::Preprocess()
 	
 	Vector end(0,0);
 	for( ; end.x+1 < this->w; ++end.x )
-		this->ScanOneLine( this->playerPos, end, 28 );
+		this->ScanOneLine( this->playerPos, end, 32 );
 	for( ; end.y+1 < this->h; ++end.y )
-		this->ScanOneLine( this->playerPos, end, 28 );
+		this->ScanOneLine( this->playerPos, end, 32 );
 	for( ; end.x > 0; --end.x )
-		this->ScanOneLine( this->playerPos, end, 28 );
+		this->ScanOneLine( this->playerPos, end, 32 );
 	for( ; end.y > 0; --end.y )
-		this->ScanOneLine( this->playerPos, end, 28 );
+		this->ScanOneLine( this->playerPos, end, 32 );
 	
 	char sign;
 	WORD color;
@@ -81,18 +81,62 @@ void DrawerPreprocessor::Preprocess()
 		for( j = 0; j < this->h; ++j )
 		{
 			int sum = (int)this->data[i][j].viewDistance;
+			int se = 0;
+			
+			if( this->data[i][j].viewDistance )
+				se = 32;
 			
 			if( i > 0 )
+			{
 				sum += (int)this->data[i-1][j].viewDistance;
+				if( this->data[i-1][j].viewDistance )
+					se += 5;
+			}
 			if( j > 0 )
+			{
 				sum += (int)this->data[i][j-1].viewDistance;
+				if( this->data[i][j-1].viewDistance )
+					se += 5;
+			}
 			if( i+1 < this->w )
+			{
 				sum += (int)this->data[i+1][j].viewDistance;
+				if( this->data[i+1][j].viewDistance )
+					se += 5;
+			}
 			if( j+1 < this->h )
+			{
 				sum += (int)this->data[i][j+1].viewDistance;
+				if( this->data[i][j+1].viewDistance )
+					se += 5;
+			}
+				
+			if( i > 0 && j > 0 )
+			{
+				//sum += (int)this->data[i-1][j-1].viewDistance >> 2;
+				if( this->data[i-1][j-1].viewDistance >> 2 )
+					se += 1;
+			}
+			if( i > 0 && j+1 < this->h )
+			{
+				//sum += (int)this->data[i-1][j+1].viewDistance >> 2;
+				if( this->data[i-1][j+1].viewDistance >> 2 )
+					se += 1;
+			}
+			if( i+1 < this->w && j > 0 )
+			{
+				//sum += (int)this->data[i+1][j-1].viewDistance >> 2;
+				if( this->data[i+1][j-1].viewDistance >> 2 )
+					se += 1;
+			}
+			if( i+1 < this->w && j+1 < this->h )
+			{
+				//sum += (int)this->data[i+1][j+1].viewDistance >> 2;
+				if( this->data[i+1][j+1].viewDistance >> 2 )
+					se += 1;
+			}
 			
-			
-			if( sum == 0 )
+			if( sum == 0 || se < 4 )//(int)this->data[i][j].viewDistance == 0 )//sum == 0 || se == 4 )
 			{
 				if( (this->data[i][j].flags & DRAWER_FLAGS::STATIC_DRAW ) == 0 )
 				{

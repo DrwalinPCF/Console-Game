@@ -7,7 +7,7 @@
 #include <vector>
 #include <string>
 
-#include "Vector.hpp"
+#include "../lib/Vector.hpp"
 #include "Window.h"
 
 #include "Actor.h"

@@ -7,7 +7,7 @@
 
 #include "Actor.h"
 
-#include "Utility.hpp"
+#include "../lib/Utility.hpp"
 
 Vector Map::GetSize() const
 {

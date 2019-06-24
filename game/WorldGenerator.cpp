@@ -76,6 +76,7 @@ void WorldGenerator::GenerateRandom( float filling )
 
 void WorldGenerator::GeneratePerlinNoise()
 {
+	Perlin perlin( 674864872142, 12 );
 	auto & map = this->isCurrentlyA ? this->mapA : this->mapB;
 	int i, j;
 	for( i = 0; i < this->size.x; ++i )
@@ -83,7 +84,7 @@ void WorldGenerator::GeneratePerlinNoise()
 		auto & A = map[i];
 		for( j = 0; j < this->size.y; ++j )
 		{
-			float value = Perlin::Noise( float(i)/10.0f, float(j)/10.0f, 0.0f );
+			float value = perlin.Noise( float(i)/10.0f, float(j)/10.0f );
 			if( value > 0.05f && value < 0.9f )
 				A[j] = true;
 			else

@@ -35,11 +35,21 @@ inline std::string GetDateString()
 
 extern "C" std::map < void*, MEMORYSTRUCT > * DEBUG_MEMORY_USED;
 
-template < typename T >
-inline T * Allocate( unsigned long long elements = 1)
+template < typename T, typename... Args >
+inline T * Allocate( unsigned long long elements = 1, Args... args )
 {
-	T * ret = new T[elements];
+	T * ret = new T[elements](args...);
 	DEBUG_MEMORY_USED->operator[](ret).elements = elements;
+	DEBUG_MEMORY_USED->operator[](ret).sizeofelement = sizeof(T);
+	DEBUG_MEMORY_USED->operator[](ret).typeString = typeid(T).name();
+	return ret;
+}
+
+template < typename T, typename... Args >
+inline T * AllocateArgs( Args... args )
+{
+	T * ret = new T[1](args...);
+	DEBUG_MEMORY_USED->operator[](ret).elements = 1;
 	DEBUG_MEMORY_USED->operator[](ret).sizeofelement = sizeof(T);
 	DEBUG_MEMORY_USED->operator[](ret).typeString = typeid(T).name();
 	return ret;

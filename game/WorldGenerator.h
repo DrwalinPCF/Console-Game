@@ -4,7 +4,7 @@
 
 #include "../engine/World.h"
 
-#include "../engine/Vector.hpp"
+#include "../lib/Vector.hpp"
 
 #include <vector>
 #include <map>
@@ -12,7 +12,7 @@
 #include <ctime>
 #include <cstdlib>
 
-#include "Perlin.hpp"
+#include "../lib/Perlin.h"
 
 class WorldGenerator
 {

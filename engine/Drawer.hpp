@@ -2,9 +2,9 @@
 #ifndef DRAWER_HPP
 #define DRAWER_HPP
 
-#include "Utility.hpp"
+#include "../lib/Utility.hpp"
+#include "../lib/Vector.hpp"
 
-#include "Vector.hpp"
 #include "Window.h"
 
 #include <vector>

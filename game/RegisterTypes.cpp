@@ -4,7 +4,7 @@
 
 #include "RegisterTypes.h"
 
-#include "../engine/Utility.hpp"
+#include "../lib/Utility.hpp"
 
 #include "../engine/World.h"
 
